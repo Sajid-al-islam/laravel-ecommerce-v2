@@ -1,0 +1,28 @@
+.variants {
+    .variant_list {
+        display: flex;
+        flex-wrap: wrap;
+        margin: 20px 0px;
+
+        .value_title {
+            font-size: 20px;
+            width: 140px;
+        }
+
+        .values_selections {
+            display: flex;
+            flex: 1;
+            flex-wrap: wrap;
+            gap: 30px;
+
+            label {
+                // input{}
+                cursor: pointer;
+
+                .variant_value {
+                    font-size: 16px;
+                }
+            }
+        }
+    }
+}
