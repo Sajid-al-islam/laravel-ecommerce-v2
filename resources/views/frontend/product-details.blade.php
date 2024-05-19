@@ -232,7 +232,7 @@
 
 
                         @if ($product->short_description)
-                            {{-- <h5>Key features</h6> --}}
+                            <h5>Key features</h6>
                             <div class="product_details_short_description">
                                 {!! $product->short_description !!}
                             </div>
@@ -252,21 +252,19 @@
                                     {{ number_format($product->sales_price) }}৳
                                 @endif
                             </div>
-                            @if (!empty($product->sizes()))
                             <div class="product_size">
                                 <b>
-                                    Select Size:
+                                    Select {{ App\Models\Product::DEFAULT_VARIANT }}:
                                 </b>
                                 <ul>
-                                    @foreach ($product->sizes()->get() as $size)
-                                    <li onclick="select_size(`{{ $size->value->title }}`)">
-                                        {{ $size->value->title }}
+                                    @foreach ($product->product_variant()->get() as $pro_variant)
+                                    <li onclick="select_size(`{{ $pro_variant->value->title }}`)">
+                                        {{ $pro_variant->value->title }}
                                     </li>
                                     @endforeach
                                 </ul>
                             </div>
-                            @endif
-                            <div class="pro-qty">
+                            <div class="pro-qty mt-4">
                                 <button onclick="cart_qty.value=(+cart_qty.value-1>0?+cart_qty.value-1:1)">-</button>
                                 <input type="number" title="Quantity" id="cart_qty" min="1" value="1">
                                 <button onclick="cart_qty.value=+cart_qty.value+1">+</button>

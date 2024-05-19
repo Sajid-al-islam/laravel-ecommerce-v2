@@ -17,6 +17,7 @@ class Product extends Model
         'related_categories',
         'related_images',
     ];
+    const DEFAULT_VARIANT = "weight";
 
     public function getRelatedCategoriesAttribute()
     {
@@ -87,9 +88,9 @@ class Product extends Model
         return $this->hasMany(ProductVariantValueProduct::class, 'product_id');
     }
 
-    public function sizes()
+    public function product_variant()
     {
-        $size = ProductVariant::where('title','size')->first();
+        $size = ProductVariant::where('title', self::DEFAULT_VARIANT)->first();
         if($size) {
             return $this->hasMany(ProductVariantValueProduct::class, 'product_id')->where('product_variant_id',$size->id);
         }
