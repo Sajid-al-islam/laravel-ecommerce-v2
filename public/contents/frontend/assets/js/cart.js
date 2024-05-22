@@ -1,7 +1,12 @@
 let selected_size = null;
 
-async function addToCart(product_id, qty = 1, show_toast = true) {
 
+
+async function addToCart(product_id, qty = 1, show_toast = true) {
+    if (!selected_size && location.pathname !== "/cart") {
+        window.s_alert("warning", "no size is selected");
+        return 0;
+    }
     await fetch("/add_to_cart", {
         method: "POST",
         headers: {
@@ -14,6 +19,7 @@ async function addToCart(product_id, qty = 1, show_toast = true) {
             size: selected_size,
         })
     }).then(async res => {
+        selected_size = null;
         let response = {}
         response.status = res.status
         response.data = await res.json();
@@ -56,6 +62,7 @@ function removeCart(product_id) {
             return response;
         }).then(res => {
             if (res.status === 200) {
+                selected_size = null;
                 $(`#${product_id}_row`).remove();
                 $(".header_cart_count").html(res.data.cart_count);
                 $("#cart_total").html(res.data.cart_total_formated);
@@ -73,10 +80,14 @@ async function buy_now(product_id, qty) {
     location.href = "/checkout";
 }
 
-function select_size(size_id) {
+function select_size(size) {
+    let size_obj = JSON.parse(size);
     $(".product_size ul li").removeClass('active');
     $(event.target).addClass('active');
-    selected_size = size_id;
+    selected_size = size_obj.product_variant_value_id;
+    let html = `${size_obj.variant_price} ৳`
+    $(`#variant_price_set`).html(html);
+
 }
 
 function up_qty(type = "inc", product_id = "") {

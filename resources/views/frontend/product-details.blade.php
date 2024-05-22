@@ -243,13 +243,25 @@
                             <div class="cart_price">
                                 @php
                                     $has_discount = $product->discounts && $product->discounts['discount_last_date'] > Carbon\Carbon::now();
+                                    $has_variant = count($product->product_variant()->get());
+                                    if($has_variant) {
+                                        $lowest_price = $product->product_variant()->orderBy('variant_price', 'asc')->first();
+                                        $highest_price = $product->product_variant()->orderBy('variant_price', 'desc')->first();
+                                    }
                                 @endphp
                                 @if ($has_discount)
                                     <del>{{ number_format($product->sales_price) }}৳</del>
                                     &nbsp;
                                     ৳ {{ number_format($product->sales_price-$product->discounts['discount_amount']) }}
+                                    @if ($has_variant)
+                                        <span id="variant_price_set">{{ number_format($lowest_price->variant_price) }}৳ - {{ number_format($highest_price->variant_price) }}৳</span>
+                                    @endif
                                 @else
+                                    @if ($has_variant)
+                                        <span id="variant_price_set">{{ number_format($lowest_price->variant_price) }}৳ - {{ number_format($highest_price->variant_price) }}৳</span>
+                                    @else
                                     {{ number_format($product->sales_price) }}৳
+                                    @endif
                                 @endif
                             </div>
                             <div class="product_size">
@@ -258,7 +270,7 @@
                                 </b>
                                 <ul>
                                     @foreach ($product->product_variant()->get() as $pro_variant)
-                                    <li onclick="select_size(`{{ $pro_variant->value->title }}`)">
+                                    <li onclick="select_size(`{{ $pro_variant }}`)">
                                         {{ $pro_variant->value->title }}
                                     </li>
                                     @endforeach
