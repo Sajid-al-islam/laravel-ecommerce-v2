@@ -8,6 +8,12 @@
             </div>
         </div>
         <div class="s_setting">
+            <label for="">Sub Area</label>
+            <div class="input_field">
+                <setting-input :type="`text`" :name="`sub_area_delivery_cost`" class="" />
+            </div>
+        </div>
+        <div class="s_setting">
             <label for="">Outside Dhaka </label>
             <div class="input_field">
                 <setting-input :type="`text`" :name="`outside_dhaka_cost`" class="" />

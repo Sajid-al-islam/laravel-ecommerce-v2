@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Cart;
 use App\Models\Product;
+use App\Models\Product\ProductVariantValueProduct;
 use Illuminate\Http\Request;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Session;
@@ -37,13 +38,13 @@ class CartController extends Controller
         ]);
     }
 
-    public function add_to_cart($id, $qty, $size=null)
+    public function add_to_cart($id, $qty, $variant=null)
     {
 
         foreach ($this->cart as $key => $value) {
-            if ($value['product']->id == $id) {
+            if ($value['product']->id == $id && $variant != $value['variant']) {
                 $value['qty'] = $qty;
-                // $value['size'] = $size;
+                $value['variant'] = $variant;
                 return $this->cart;
             }
         }
@@ -51,12 +52,11 @@ class CartController extends Controller
         $product = Product::where('id', $id)
             ->where('status', 1)
             ->select("id", "product_name", "sales_price")
-            ->with(['discounts', 'related_image' => function ($q) {
+            ->with(['discounts','related_image' => function ($q) {
                 $q->select('id', 'product_id', 'image');
             }])
             ->first();
 
-        // dd($product);
 
         if (isset($product->discounts) && $product->discounts) {
             $price = (float)$product->sales_price - (float)$product->discounts['discount_amount'];
@@ -64,15 +64,21 @@ class CartController extends Controller
             $price = (float)$product->sales_price;
         }
 
+        if(!empty($variant)) {
+            $product_variant = ProductVariantValueProduct::where('product_id', $id)->where('product_variant_value_id', $variant)->first();
+            $price = $product_variant->variant_price;
+        }
+
         if (!is_numeric($price)) {
             $price = 0;
         }
+
 
         $temp_arr = [
             "product" => $product,
             "qty" => $qty,
             "price" => $price,
-            "size" => $size,
+            "variant" => $variant,
         ];
 
         array_push($this->cart, collect($temp_arr));

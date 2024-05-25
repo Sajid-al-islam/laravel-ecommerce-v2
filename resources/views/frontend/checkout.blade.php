@@ -220,11 +220,18 @@
                                                     name="shipping_method" value="home_delivery" />
                                                 Inside Dhaka - {{ $home_delivery_value }} ৳
                                             </label>
+                                            <br />
                                             {{-- <br />
                                         <label class="radio-inline">
                                             <input type="radio" onchange="shipping_cost.innerHTML=0; total_cost.innerHTML=`{{$cart_total}}`;" checked name="shipping_method" value="pickup" />
                                             Store Pickup - 0 ৳
                                         </label> --}}
+                                            <label class="radio-inline">
+                                                <input id="outside_dhaka" type="radio"
+                                                    onchange="shipping_cost.innerHTML=`{{ $sub_area_delivery_value }}`; total_cost.innerHTML=`{{ $sub_area_delivery_value + $cart_total }}`;"
+                                                    name="shipping_method" value="outside_dhaka" />
+                                                Dhaka Sub area (Gazipur, Naraynganj) - {{ $sub_area_delivery_value }} ৳
+                                            </label>
                                             <br />
                                             <label class="radio-inline">
                                                 <input id="outside_dhaka" type="radio"
@@ -304,7 +311,7 @@
                                                 <thead>
                                                     <tr>
                                                         <td>Product Name</td>
-                                                        <td>Size</td>
+                                                        {{-- <td>Size</td> --}}
                                                         <td>Price</td>
                                                         <td class="text-end">Total</td>
                                                     </tr>
@@ -319,22 +326,22 @@
                                                                         href="javascript:void(0)">{{ $cart['product']->product_name }}</a>
                                                                     <div class="options"></div>
                                                                 </td>
-                                                                <td>
-                                                                    {{ $cart['size'] }}
-                                                                </td>
+                                                                {{-- <td>
+                                                                    {{ $cart['variant'] }}
+                                                                </td> --}}
                                                                 <td class="price">
-                                                                    <span>{{ $cart['product']->sales_price }}৳</span>
+                                                                    <span>{{ $cart['price'] }}৳</span>
                                                                     <span> x </span> <span>{{ $cart['qty'] }}</span>
                                                                 </td>
                                                                 <td class="price text-end">
-                                                                    {{ $cart['product']->sales_price * $cart['qty'] }}৳
+                                                                    {{ $cart['price'] * $cart['qty'] }}৳
                                                                 </td>
                                                             </tr>
                                                         @endforeach
                                                     @endif
 
                                                     <tr class="total">
-                                                        <td colspan="3" class="text-end"><strong>Sub-Total:</strong>
+                                                        <td colspan="2" class="text-end"><strong>Sub-Total:</strong>
                                                         </td>
                                                         <input type="hidden" name="cart_total"
                                                             value="{{ $cart_total }}" id="cart_total">
@@ -342,7 +349,7 @@
                                                                 class="amount">{{ $cart_total }}৳</span></td>
                                                     </tr>
                                                     <tr class="total">
-                                                        <td colspan="3" class="text-end"><strong>Delivery:</strong>
+                                                        <td colspan="2" class="text-end"><strong>Delivery:</strong>
                                                         </td>
                                                         <td class="text-end">
                                                             <span class="amount">
@@ -357,7 +364,7 @@
                                                     @endphp
                                                     @if ($check_offer)
                                                         <tr class="total">
-                                                            <td colspan="3" class="text-end">
+                                                            <td colspan="2  " class="text-end">
                                                                 <strong>Discount: {{ $setting->discount_on_greater_title }}</strong>
                                                             </td>
                                                             <td class="text-end">
@@ -369,7 +376,7 @@
                                                     @endif
 
                                                     <tr class="total">
-                                                        <td colspan="3" class="text-end"><strong>Total:</strong></td>
+                                                        <td colspan="2" class="text-end"><strong>Total:</strong></td>
                                                         <input type="hidden" name="order_total" value="{{ $cart_total }}" id="order_total">
                                                         <td class="text-end">
                                                             <span class="amount" id="total_cost">

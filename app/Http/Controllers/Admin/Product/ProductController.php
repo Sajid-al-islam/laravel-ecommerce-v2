@@ -187,12 +187,14 @@ class ProductController extends Controller
         if(!empty($variants)) {
             foreach ($variants as $variant_id => $variant) {
                 foreach($variant as $variant_values) {
-                    ProductVariantValueProduct::create([
-                        "product_id" => $product_id,
-                        "product_variant_id" => $variant_id,
-                        "product_variant_value_id" => $variant_values['variant_id'],
-                        "variant_price" => $variant_values['variant_price']
-                    ]);
+                    if(!empty($variant_values['variant_id'])) {
+                        ProductVariantValueProduct::create([
+                            "product_id" => $product_id,
+                            "product_variant_id" => $variant_id,
+                            "product_variant_value_id" => $variant_values['variant_id'],
+                            "variant_price" => $variant_values['variant_price']
+                        ]);
+                    }
                 }
             }
         }

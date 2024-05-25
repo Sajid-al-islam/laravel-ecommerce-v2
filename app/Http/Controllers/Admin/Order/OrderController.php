@@ -72,7 +72,7 @@ class OrderController extends Controller
                 'order_payments',
                 'stead_fast',
                 'order_details' => function ($q) {
-                    $q->with('product');
+                    $q->with(['product', 'variant']);
                 }
             ])->first();
         if (!$data) {
@@ -263,7 +263,16 @@ class OrderController extends Controller
                 'errors' => ['name' => ['order not found by given id ' . (request()->id ? request()->id : 'null')]],
             ], 422);
         }
-
+        if(isset(request()->delivery_cost) && !empty(request()->delivery_cost)) {
+            $data->total_price = $data->sub_total + request()->delivery_cost;
+            $data->delivery_cost = request()->delivery_cost;
+        }
+        if(isset(request()->subtotal) && !empty(request()->subtotal)) {
+            $data->sub_total = request()->subtotal;
+        }
+        if(isset(request()->total_discount) && !empty(request()->total_discount)) {
+            $data->total_discount = request()->total_discount;
+        }
         $data->order_status = request()->order_status;
         $data->save();
 

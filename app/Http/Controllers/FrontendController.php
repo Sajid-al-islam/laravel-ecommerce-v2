@@ -25,20 +25,22 @@ class FrontendController extends Controller
 {
     public function checkout()
     {
-        $setting = Setting::select('home_delivery_cost', 'outside_dhaka_cost')->first();
+        $setting = Setting::select('home_delivery_cost', 'outside_dhaka_cost', 'sub_area_delivery_cost')->first();
         $cart_handler = new CartController();
         $carts = $cart_handler->get();
-        $shipping_method  = 50;
+        $shipping_method  = $setting->home_delivery_cost;
         $cart_total = $cart_handler->cart_total();
         $order_total = 0;
         $home_delivery_value = $setting->home_delivery_cost;
+        $sub_area_delivery_value = $setting->sub_area_delivery_cost;
         $outside_dhaka_value = $setting->outside_dhaka_cost;
 
-        return view('frontend.checkout', compact('carts', 'cart_total', 'shipping_method', 'order_total', 'home_delivery_value', 'outside_dhaka_value'));
+        return view('frontend.checkout', compact('carts', 'cart_total', 'shipping_method', 'order_total', 'home_delivery_value', 'outside_dhaka_value', 'sub_area_delivery_value'));
     }
 
     public function confirm_order(Request $request)
     {
+        // dd($request->all());
         $carts = new CartController();
         $rules = [
             'first_name' => ['required', 'string'],
@@ -74,7 +76,7 @@ class FrontendController extends Controller
             ], 422);
         }
 
-        $setting = Setting::select('home_delivery_cost', 'outside_dhaka_cost','discount_on_greater_amount','discount_on_greater_tk')->first();
+        $setting = Setting::select('home_delivery_cost', 'sub_area_delivery_cost', 'outside_dhaka_cost','discount_on_greater_amount','discount_on_greater_tk')->first();
         $shipping_charge = 0;
 
         if ($request->distircts == 47) {
@@ -83,16 +85,19 @@ class FrontendController extends Controller
             $shipping_charge = $setting->outside_dhaka_cost;
         }
 
+        if (isset($request->shipping_method) && $request->shipping_method == 'home_delivery') {
+            $shipping_charge = $setting->home_delivery_cost;
+        }
+        if (isset($request->shipping_method) && $request->shipping_method == 'sub_area') {
+            $shipping_charge = $setting->sub_area_delivery_cost;
+        }
+        if (isset($request->shipping_method) && $request->shipping_method == 'outside_dhaka') {
+            $shipping_charge = $setting->outside_dhaka_cost;
+        }
+
         if(isset($request->delivery_charge) && $request->delivery_charge == 0) {
             $shipping_charge = 0;
         }
-
-        // if ($request->shipping_method == 'home_delivery') {
-        //     $shipping_charge = $setting->home_delivery_cost;
-        // }
-        // if ($request->shipping_method == 'outside_dhaka') {
-        //     $shipping_charge = $setting->outside_dhaka_cost;
-        // }
 
         $cart_handler = new CartController();
         $cart_total = $cart_handler->cart_total();
@@ -112,12 +117,12 @@ class FrontendController extends Controller
         $order->payment_status = 'Pending';
         $order->delivery_method = $request->shipping_method;
 
-        $check_offer = $setting->discount_on_greater_amount > 0 && $cart_total >= $setting->discount_on_greater_amount;
-        if($check_offer){
-            $discount = floor(($cart_total + $shipping_charge) * $setting->discount_on_greater_tk / 100 );
-            $order->total_price -= $discount;
-            $order->total_discount += $discount;
-        }
+        // $check_offer = $setting->discount_on_greater_amount > 0 && $cart_total >= $setting->discount_on_greater_amount;
+        // if($check_offer){
+        //     $discount = floor(($cart_total + $shipping_charge) * $setting->discount_on_greater_tk / 100 );
+        //     $order->total_price -= $discount;
+        //     $order->total_discount += $discount;
+        // }
 
         $order->save();
 
@@ -191,7 +196,7 @@ class FrontendController extends Controller
                 $order_details->product_price = 0;
             }
             $order_details->qty = $product['qty'];
-            $order_details->size = $product['size'];
+            $order_details->size = $product['variant'];
             $order_details->save();
 
             $stock_log = new ProductStockLog();

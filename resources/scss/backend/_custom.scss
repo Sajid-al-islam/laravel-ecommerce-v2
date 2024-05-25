@@ -409,6 +409,9 @@
 .swal2-container {
     z-index: 99999;
 }
+.printable_span {
+    display: none;
+}
 
 @media print {
     #print_section {
@@ -422,6 +425,9 @@
         box-shadow: none;
         padding: 20px;
         margin-top: 40px;
+    }
+    .printable_span {
+        display: block;
     }
 
     .container {

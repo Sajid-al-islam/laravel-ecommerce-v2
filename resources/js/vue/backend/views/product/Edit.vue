@@ -118,7 +118,7 @@
                                                 <div class="values_selections">
                                                     <label :for="`variant_${variant.id}_${variant_value.id}`" v-for="variant_value in variant.values" :key="variant_value.id">
                                                         <input type="checkbox"
-                                                            :name="`variants[${variant.id}][]`"
+                                                            :name="`variants[${variant.id}][${variant_value.id}][variant_id]`"
                                                             :value="`${variant_value.id}`"
                                                             :checked="check_has_variant(variant.id, variant_value.id)"
                                                             class="form-check-input"
@@ -126,6 +126,8 @@
                                                         <span class="variant_value">
                                                             {{ variant_value.title }}
                                                         </span>
+                                                        <input type="text" :value="set_variant_pricing(variant.id, variant_value.id)" :name="`variants[${variant.id}][${variant_value.id}][variant_price]`"
+                                                            class="form-control" placeholder="variant price">
                                                     </label>
                                                 </div>
                                             </div>
@@ -365,6 +367,17 @@ export default {
         ]),
         call_store: function(name, params=null){
             this[name](params)
+        },
+        set_variant_pricing: function(variant_id, variant_value_id) {
+            let variant_price = 0
+            this.product.variants.forEach(v=> {
+                if(v.product_variant_id == variant_id && v.product_variant_value_id == variant_value_id){
+                    variant_price = v.variant_price;
+                }else{
+                    variant_price = 0;
+                }
+            })
+            return variant_price;
         },
         check_has_variant: function(variant_id, variant_value_id){
             let check = this.product.variants.find(v=> {
