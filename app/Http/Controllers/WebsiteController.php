@@ -12,7 +12,7 @@ class WebsiteController extends Controller
     public function website()
     {
         $category_products = Category::select('id', 'name')->where('status', 1)->with(['products' => function($q) {
-            $q->where('status', 1);
+            $q->where('status', 1)->with('product_variant');
         }])->get();
         return view('frontend.home', compact('category_products'));
     }

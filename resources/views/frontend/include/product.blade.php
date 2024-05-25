@@ -17,7 +17,11 @@
                 ];
             } catch (\Throwable $th) {
                 dd($product);
-                //throw $th;
+            }
+            $has_variant = count($product->product_variant()->get());
+            if($has_variant) {
+                $lowest_price = $product->product_variant()->orderBy('variant_price', 'asc')->first();
+                $highest_price = $product->product_variant()->orderBy('variant_price', 'desc')->first();
             }
         @endphp
 
@@ -58,17 +62,25 @@
                         @endif
 
                         @if ($product->discounts && $product->discounts['discount_last_date'] > Carbon\Carbon::now())
-                            <div class="d-block">
-                                <span class="price-old">{{ number_format($product->sales_price) }} ৳</span>
-                            </div>
-                            <div class="d-block">
-                                <span>{{ number_format($product->sales_price - $product->discounts['discount_amount']) }}
-                                    ৳</span>
-                            </div>
+                            @if ($has_variant)
+                                <span id="variant_price_set">{{ number_format($lowest_price->variant_price) }}৳ - {{ number_format($highest_price->variant_price) }}৳</span>
+                            @else
+                                <div class="d-block">
+                                    <span class="price-old">{{ number_format($product->sales_price) }} ৳</span>
+                                </div>
+                                <div class="d-block">
+                                    <span>{{ number_format($product->sales_price - $product->discounts['discount_amount']) }}
+                                        ৳</span>
+                                </div>
+                            @endif
                         @else
                             <div class="product_price_amount">
                                 @if (is_numeric($product->sales_price))
-                                    {{ number_format($product->sales_price) }} ৳
+                                    @if ($has_variant)
+                                        <span id="variant_price_set">{{ number_format($lowest_price->variant_price) }}৳ - {{ number_format($highest_price->variant_price) }}৳</span>
+                                    @else
+                                        {{ number_format($product->sales_price) }} ৳
+                                    @endif
                                 @else
                                     {{ $product->sales_price }}
                                 @endif
