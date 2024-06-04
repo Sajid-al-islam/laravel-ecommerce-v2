@@ -20,6 +20,7 @@ import product_stock from './modules/product_stock_modules';
 import banner_modules from './modules/banner_modules';
 import setting_modules from './modules/setting_modules';
 import variant_modules from './modules/variant_modules';
+import landing_page_modules from './modules/landing_page_modules';
 
 const store = new Vuex.Store({
     modules: {
@@ -40,6 +41,7 @@ const store = new Vuex.Store({
         banner_modules,
         setting_modules,
         variant_modules,
+        landing_page_modules
     },
     state: {},
     getters: {},

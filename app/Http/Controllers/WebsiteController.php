@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Category;
+use App\Models\LandingPage;
 use App\Models\Order;
 use App\Models\Product;
 use Illuminate\Http\Request;
@@ -50,6 +51,14 @@ class WebsiteController extends Controller
     public function organic_oil(Request $request) {
         $products = Product::where('is_hair', 1)->get();
         return view('frontend.organic_oil', compact('products'));
+    }
+
+    public function landingPage($slug) {
+        $landing_page = LandingPage::where('slug', $slug)->with(['landingProducts' => function($q) {
+            $q->with('product');
+        }, 'landingFaq'])->first();
+        $products = Product::where('is_hair', 1)->get();
+        return view('frontend.organic_oil', compact('landing_page', 'products'));
     }
 
     public function invoice_download($invoice)

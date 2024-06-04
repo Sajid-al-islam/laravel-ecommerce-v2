@@ -32,6 +32,11 @@
                 <!-- <left-nav-list-item :to="'AllProduct'" :text="'Product categories'" /> -->
             </left-nav-list-group>
 
+            <left-nav-list-group :role_permissions="['super_admin','admin']" :icon="`fa-solid fa-pager`" :text="`Landing Page`" :alert_count="0">
+                <left-nav-list-item :to="'AllLandingPage'" :text="'Landing Page list'" />
+                <left-nav-list-item :to="'CreateLandingPage'" :text="'Create Landing Page'" />
+            </left-nav-list-group>
+
             <!-- <left-nav-list-group :role_permissions="['super_admin','admin']" :icon="`fa fa-boxes`" :text="`Product Stock`" :alert_count="0"> -->
                 <!-- <left-nav-list-item :to="'CreateProductStock'" :text="'Create product Stock'" /> -->
                 <!-- <left-nav-list-item :to="'AllProductStock'" :text="'Product Stock Lists'" /> -->

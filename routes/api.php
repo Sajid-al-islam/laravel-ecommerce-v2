@@ -103,6 +103,14 @@ Route::group(
                 Route::get('/{id}','Admin\Product\ProductController@show');
             });
 
+            Route::group(['prefix' => 'landing-page'], function () {
+                Route::get('/all','Admin\Product\ProductController@allLandingPage');
+                Route::post('/store','Admin\Product\ProductController@storeLandingPage');
+                Route::post('/update','Admin\Product\ProductController@updateLandingPage');
+                Route::post('/destroy','Admin\Product\ProductController@destroyLandingPage');
+                Route::get('/{id}','Admin\Product\ProductController@showLandingPage');
+            });
+
             Route::group(['prefix' => 'product_stock'], function () {
                 Route::get('/all','Admin\Product\ProductStockController@all');
                 Route::post('/store','Admin\Product\ProductStockController@store');

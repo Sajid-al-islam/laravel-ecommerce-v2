@@ -18,6 +18,7 @@ import supplier_route from './dashboard_routes/supplier_route'
 import product_stock_route from './dashboard_routes/product_stock_route'
 import banner_route from './dashboard_routes/banner_route'
 import variant_route from './dashboard_routes/variant_route'
+import landing_page_route from './dashboard_routes/landing_page_route'
 
 Vue.use(VueRouter);
 window.Fire = new Vue();
@@ -43,6 +44,7 @@ const routes = [{
             product_stock_route,
             banner_route,
             variant_route,
+            landing_page_route
         ]
     },
     {

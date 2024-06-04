@@ -85,14 +85,14 @@
                         </tr>
                     </thead>
                     <tbody class="table-border-bottom-0">
-                        <tr v-for="item in this[`get_${store_prefix}s`].data" :key="item.id">
+                        <tr v-for="(item, index) in this[`get_${store_prefix}s`].data" :key="item.id">
                             <td>
                                 <input v-if="check_if_data_is_selected(item)" :data-id="item.id" checked @change="call_store(`set_selected_${store_prefix}s`,item)" type="checkbox" class="form-check-input">
                                 <input v-else @change="call_store(`set_selected_${store_prefix}s`,item)" type="checkbox" class="form-check-input">
                             </td>
                             <td>
                                 <span :class="item.stocks_sum_qty - item.sales_sum_qty <= item.low_stock?'badge text-light bg-danger':''">
-                                    {{ item.id }}
+                                    {{ index+1 }}
                                 </span>
                             </td>
                             <td>
@@ -109,7 +109,7 @@
                             </td>
                             <td>
                                 <span class="font-bold">
-                                    {{ item.sales_price }} ৳ 
+                                    {{ item.sales_price }} ৳
                                 </span>
                             </td>
                             <td>

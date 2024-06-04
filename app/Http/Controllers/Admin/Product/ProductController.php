@@ -5,6 +5,9 @@ namespace App\Http\Controllers\Admin\Product;
 use App\Http\Controllers\Controller;
 use App\Models\ContactMessage;
 use App\Models\DiscountProduct;
+use App\Models\LandingPage;
+use App\Models\LandingPageFaq;
+use App\Models\LandingPageProduct;
 use App\Models\Product;
 use App\Models\Product\ProductVariantValue;
 use App\Models\Product\ProductVariantValueProduct;
@@ -14,9 +17,14 @@ use App\Models\ProductStockLog;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Validator;
 use Intervention\Image\Facades\Image as interImage;
+use Illuminate\Validation\Rule;
+use Illuminate\Validation\Rules\File;
 use Throwable;
+use Illuminate\Support\Str;
 
 class ProductController extends Controller
 {
@@ -47,6 +55,115 @@ class ProductController extends Controller
         $query->withSum('sales', 'qty');
         $users = $query->paginate($paginate);
         return response()->json($users);
+    }
+
+    public function allLandingPage() {
+        $paginate = (int) request()->paginate;
+        $orderBy = request()->orderBy;
+        $orderByType = request()->orderByType;
+
+        $query = LandingPage::orderBy($orderBy, $orderByType);
+
+        if (request()->has('search_key')) {
+            $key = request()->search_key;
+            $query->where(function ($q) use ($key) {
+                return $q->where('id', $key)
+                    ->orWhere('name', $key)
+                    ->orWhere('first_title', $key)
+                    ->orWhere('first_title', 'LIKE', '%' . $key . '%')
+                    ->orWhere('second_title', 'LIKE', '%' . $key . '%');
+            });
+        }
+        $landing_pages = $query->paginate($paginate);
+        return response()->json($landing_pages);
+    }
+
+    public function storeLandingPage() {
+        $validator = Validator::make(request()->all(), [
+            'name' => ['required', 'unique:landing_pages'],
+            'title' => ['required', 'string', 'max:100'],
+            'sub_title' => ['required', 'string', 'max:200'],
+            'first_btn_text' => ['string', 'max:60'],
+            'first_btn_color' => ['max:10'],
+            'second_btn_color' => ['max:10'],
+            'primary_color' => ['max:10'],
+            'secondary_color' => ['max:10'],
+            'delivery_cost' => ['required'],
+            'middle_title' => ['required','string', 'max:200'],
+            'video_link' => ['string'],
+            'image1' => ['nullable', 'image', 'mimes:jpg,png,webp'],
+            'image2' => ['nullable', 'image', 'mimes:jpg,png,webp'],
+            'faq_title' => ['required', 'string']
+        ]);
+
+        $landing_info = request()->except([
+            'image1',
+            'image2',
+            'faqs',
+            'product_ids'
+        ]);
+
+
+        try{
+            if ($validator->fails()) {
+                return response()->json([
+                    'err_message' => 'validation error',
+                    'errors' => $validator->errors(),
+                ], 422);
+            }
+            DB::beginTransaction();
+
+            $landing_page = LandingPage::create($landing_info);
+            $landing_page->slug = Str::slug($landing_page->name);
+            $this->setLandingPageProduct($landing_page->id, request()->product_ids);
+            $this->setLandingFaq($landing_page->id, request()->faqs);
+
+            try {
+                if(request()->hasFile('image1')) {
+                    $landing_page->image_1 = $this->store_product_file(request()->file('image1'));
+                }
+                if(request()->hasFile('image2')) {
+                    $landing_page->image_2 = $this->store_product_file(request()->file('image2'));
+                }
+                $landing_page->save();
+            } catch (\Throwable $e) {
+                return response()->json($e->getMessage(), 500);
+            }
+            DB::commit();
+
+            $message = "Landing Page Created!";
+            return response()->json([
+                'message' => $message
+            ], 200);
+
+        }catch(Throwable $th) {
+            Log::error($th->getMessage());
+            DB::rollBack();
+        }
+    }
+
+    public function setLandingPageProduct($landing_page_id, $product_ids) {
+        if(is_array($product_ids)) {
+            foreach ($product_ids as $key => $product_id) {
+                LandingPageProduct::create([
+                    "product_id" => $product_id,
+                    "landing_page_id" => $landing_page_id,
+                ]);
+            }
+        }
+    }
+
+    public function setLandingFaq($landing_page_id, $faqs) {
+        if(!empty($faqs)) {
+            $faqs = json_decode($faqs);
+            foreach($faqs as $faq) {
+                LandingPageFaq::create([
+                    'landing_page_id' => $landing_page_id,
+                    'title' => $faq->title,
+                    'description' => $faq->description,
+                ]);
+            }
+        }
     }
 
     public function show($id)
