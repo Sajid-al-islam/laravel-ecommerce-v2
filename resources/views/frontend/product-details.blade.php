@@ -10,6 +10,7 @@
     ],
 ])
 @section('content')
+
 <main class="main-content">
     <script src="https://ctgcomputer.com/contents/website/plugins/lightbox/lightbox.min.js"></script>
     <link rel="stylesheet" href="https://ctgcomputer.com/contents/website/plugins/lightbox/lightbox.min.css">
@@ -175,14 +176,14 @@
                                     <tr class="product-info-group">
                                         <td class="product-info-label">Price</td>
                                         <td class="product-info-data product-price">
-                                            {{ number_format($product->sales_price-$product->discounts['discount_amount']) }}৳
+                                            {{ convertDigitsToBengali(number_format($product->sales_price-$product->discounts['discount_amount'])) }}৳
                                         </td>
                                     </tr>
                                 @endif
                                 @if (is_numeric($product->sales_price))
                                     <tr class="product-info-group">
                                         <td class="product-info-label">Regular Price</td>
-                                        <td class="product-info-data product-regular-price">{{ number_format($product->sales_price) }}৳</td>
+                                        <td class="product-info-data product-regular-price">{{ convertDigitsToBengali(number_format($product->sales_price)) }}৳</td>
                                     </tr>
                                 @endif
                                 @if (is_numeric($product->sales_price) && is_numeric($product->stocks_sum_qty) && number_format($product->stocks_sum_qty) > 0)
@@ -240,7 +241,7 @@
 
                         <div class="mb-3 mt-3">
                             <h5>Price</h6>
-                            <div class="cart_price">
+                            <div class="cart_price" style="font-family:monospace;">
                                 @php
                                     $has_discount = $product->discounts && $product->discounts['discount_last_date'] > Carbon\Carbon::now();
                                     $has_variant = count($product->product_variant()->get());
@@ -254,11 +255,11 @@
                                     &nbsp;
                                     ৳ {{ number_format($product->sales_price-$product->discounts['discount_amount']) }}
                                     @if ($has_variant)
-                                        <span id="variant_price_set">{{ number_format($lowest_price->variant_price) }}৳ - {{ number_format($highest_price->variant_price) }}৳</span>
+                                        <span id="variant_price_set">{{ convertDigitsToBengali(number_format($lowest_price->variant_price)) }}৳ - {{ convertDigitsToBengali(number_format($highest_price->variant_price)) }}৳</span>
                                     @endif
                                 @else
                                     @if ($has_variant)
-                                        <span id="variant_price_set">{{ number_format($lowest_price->variant_price) }}৳ - {{ number_format($highest_price->variant_price) }}৳</span>
+                                        <span id="variant_price_set">{{ convertDigitsToBengali(number_format($lowest_price->variant_price)) }}৳ - {{ convertDigitsToBengali(number_format($highest_price->variant_price)) }}৳</span>
                                     @else
                                     {{ number_format($product->sales_price) }}৳
                                     @endif

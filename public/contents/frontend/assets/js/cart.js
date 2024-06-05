@@ -80,14 +80,24 @@ async function buy_now(product_id, qty) {
     location.href = "/checkout";
 }
 
+function convertDigitsToBengali(number) {
+    const englishDigits = ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9'];
+    const bengaliDigits = ['০', '১', '২', '৩', '৪', '৫', '৬', '৭', '৮', '৯'];
+
+    return number.toString().split('').map(function(digit) {
+        const index = englishDigits.indexOf(digit);
+        return index !== -1 ? bengaliDigits[index] : digit;
+    }).join('');
+}
+
+
 function select_size(size) {
     let size_obj = JSON.parse(size);
     $(".product_size ul li").removeClass('active');
     $(event.target).addClass('active');
     selected_size = size_obj.product_variant_value_id;
-    let html = `${size_obj.variant_price} ৳`
+    let html = `${convertDigitsToBengali(size_obj.variant_price)} ৳`
     $(`#variant_price_set`).html(html);
-
 }
 
 function up_qty(type = "inc", product_id = "") {
@@ -370,3 +380,13 @@ async function get_unions(upazila = 1) {
             let value = e.target.value;
         });
 }
+
+var finalEnlishToBanglaNumber={'0':'০','1':'১','2':'২','3':'৩','4':'৪','5':'৫','6':'৬','7':'৭','8':'৮','9':'৯'};
+
+String.prototype.getDigitBanglaFromEnglish = function() {
+    var retStr = this;
+    for (var x in finalEnlishToBanglaNumber) {
+         retStr = retStr.replace(new RegExp(x, 'g'), finalEnlishToBanglaNumber[x]);
+    }
+    return retStr;
+};

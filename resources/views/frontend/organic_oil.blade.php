@@ -3,37 +3,72 @@
         'title' => 'Organic oil',
     ],
 ])
+<style>
+    .outlined_btn {
+        border: 2px solid {{ !empty($landing_page->secondary_color) ? $landing_page->secondary_color : '#fcd957' }};
+        color: {{ !empty($landing_page->secondary_color) ? $landing_page->secondary_color : '#fcd957' }};
+        font-size: 20px;
+    }
+
+    .outlined_btn:hover {
+        border: 2px solid {{ !empty($landing_page->secondary_color) ? $landing_page->secondary_color : '#fcd957' }};
+        color: {{ !empty($landing_page->secondary_color) ? $landing_page->secondary_color : '#fcd957' }};
+        font-size: 20px;
+    }
+</style>
 @section('content')
     <main class="main-content">
         <header class="masthead">
             <div class="container px-4 px-lg-5 h-100">
                 <div class="row gx-4 gx-lg-5 h-100 align-items-center justify-content-center text-center">
                     <div class="col-lg-8 align-self-end">
-                        <h1 class="text-white font-weight-bold">চুলের যাবতীয় সমস্যার প্রাকৃতিক সমাধান</h1>
+                        <h1 class="text-white font-weight-bold">{{ $landing_page->title }}</h1>
                         <hr class="divider" />
                     </div>
                     <div class="col-lg-8 align-self-baseline">
-                        <p class="text-white-75 mb-5">সঠিক সময়ে সঠিক পন্য টাই আপনাদের হাতে পৌছে দিবো ইনশাআল্লাহ।</p>
-                        <a class="btn btn-primary btn-xl outlined_btn button-animation" href="#order_section">দ্রুত অর্ডার করতে ক্লিক করুন</a>
+                        <p class="text-white-75 mb-5">{{ $landing_page->sub_title }}</p>
+                        <a class="btn btn-primary btn-xl outlined_btn button-animation"
+                            href="#order_section">{{ !empty($landing_page->first_btn_text) ? $landing_page->first_btn_text : 'দ্রুত অর্ডার করতে ক্লিক করুন' }}</a>
                     </div>
                 </div>
             </div>
         </header>
         <!-- About-->
         <section class="row">
-            <iframe class="utube_video" frameborder="0" allowfullscreen=""
-                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
-                referrerpolicy="strict-origin-when-cross-origin" width="700" height="500"
-                src="https://www.youtube.com/embed/mk3LaXZJAYc?si=-mjhHPJGTEji8M5Z&amp" id="widget2"></iframe>
+            @if (!empty($landing_page->video_link))
+                <iframe class="utube_video" frameborder="0" allowfullscreen=""
+                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                    referrerpolicy="strict-origin-when-cross-origin" width="700" height="500"
+                    src="https://www.youtube.com/embed/{{ $landing_page->video_link }}" id="widget2"></iframe>
+            @endif
         </section>
         <section class="page-section" id="services">
             <div class="container px-4 px-lg-5">
-                <h2 class="text-center mt-0">100% Natural hair oil</h2>
+                <h2 class="text-center mt-0">{{ $landing_page->middle_title }}</h2>
                 <div class="d-flex justify-content-center my-5">
-                    <img width="600" src="{{ asset('contents/frontend/organic_oil.jpg') }}" alt="">
+                    @php
+                        if (!empty($landing_page->image_1) && !empty($landing_page->image_2)) {
+                            $both_img_available = true;
+                        }
+                    @endphp
+                    @if (isset($both_img_available) && $both_img_available == true)
+                        <div class="row">
+                            <div class="col-sm-6 col-md-6 col-12">
+                                <img width="600" src="/{{ $landing_page->image_1 }}" alt="">
+                            </div>
+                            <div class="col-sm-6 col-md-6 col-12">
+                                <img width="600" src="/{{ $landing_page->image_2 }}" alt="">
+                            </div>
+                        </div>
+                    @elseif (!empty($landing_page->image_1))
+                        <img width="600" src="/{{ $landing_page->image_1 }}" alt="">
+                    @elseif (!empty($landing_page->image_2))
+                        <img width="600" src="/{{ $landing_page->image_2 }}" alt="">
+                    @endif
                 </div>
                 <div class="d-flex justify-content-center">
-                    <a href="#order_section" class="btn btn-primary outlined_btn button-animation">অর্ডার করতে ক্লিক করুন!</a>
+                    <a href="#order_section" class="btn btn-primary outlined_btn button-animation">অর্ডার করতে ক্লিক
+                        করুন!</a>
                 </div>
             </div>
         </section>
@@ -53,28 +88,28 @@
         <!-- Services-->
         <section class="page-section bg_with_img" id="services">
             <div class="container px-4 px-lg-5">
-                <h2 class="text-center mt-0 text-white">নীচের প্রশ্নগুলো আমরা প্রতিনিয়ত পেয়ে থাকি। আশা করি এর মধ্যে আপনি
-                    আপনার প্রশ্নের উত্তর পেয়ে যাবেন এবং আমাদের তেলের সম্পর্কে বিস্তারিত জানতে পারবেন...</h2>
+                <h2 class="text-center mt-0 text-white">{{ $landing_page->faq_title }}</h2>
                 <hr class="divider" />
                 <div class="accordion" id="accordionExample">
-                    <div class="accordion-item">
-                        <h2 class="accordion-header" id="headingOne">
-                            <button class="accordion-button" type="button" data-bs-toggle="collapse"
-                                data-bs-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
-                                আমার চুল অকালে পেকে যাচ্ছে। এই তেল কি আমার চুল কালো করবে?
-                            </button>
-                        </h2>
-                        <div id="collapseOne" class="accordion-collapse collapse show" aria-labelledby="headingOne"
-                            data-bs-parent="#accordionExample">
-                            <div class="accordion-body">
-                                অকালে চুল পেকে যাওয়া চুলের জন্য খুব খারাপ লক্ষণ। এর মানে আপনার চুলের স্বাস্থ্য ভালো নেই
-                                কিংবা প্রোটিনের অভাব। সময় থাকতে সঠিক ভাবে যত্ন না নিলে সামনে আরও ক্ষতি হবে। আমার তেলটি
-                                প্রাকৃতিক ভাবে আপনার চুলকে কালো করবে শতভাগ। বহু মানুষের অকাল পক্কতার সমাধান করছে আমাদের
-                                প্রাকৃতিক তেলটি
+                    @foreach ($landing_page->landingFaq as $key => $faq)
+                        <div class="accordion-item">
+                            <h2 class="accordion-header" id="heading{{ $key }}">
+                                <button class="accordion-button" type="button" data-bs-toggle="collapse"
+                                    data-bs-target="#collapse{{ $key }}"
+                                    aria-expanded="{{ $key == 0 ? true : '' }}"
+                                    aria-controls="collapse{{ $key }}">
+                                    {{ $faq->title }}
+                                </button>
+                            </h2>
+                            <div id="collapse{{ $key }}" class="accordion-collapse collapse show"
+                                aria-labelledby="heading{{ $key }}" data-bs-parent="#accordionExample">
+                                <div class="accordion-body">
+                                    {{ $faq->description }}
+                                </div>
                             </div>
                         </div>
-                    </div>
-                    <div class="accordion-item">
+                    @endforeach
+                    {{-- <div class="accordion-item">
                         <h2 class="accordion-header" id="headingTwo">
                             <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
                                 data-bs-target="#collapseTwo" aria-expanded="false" aria-controls="collapseTwo">
@@ -123,7 +158,7 @@
                                 প্রায় ৩১ টি প্রাকৃতিক উপাদান ব্যবহার করা হয়েছে যা চুলের জন্য অনেক অনেক উপকারী।
                             </div>
                         </div>
-                    </div>
+                    </div> --}}
                 </div>
             </div>
         </section>
@@ -167,8 +202,7 @@
                                             <h4 class="mb-3">অর্ডার কনফার্ম করতে</h4>
 
                                             @foreach ($errors->all() as $error)
-                                                <div class="alert alert-danger alert-dismissible fade show"
-                                                    role="alert">
+                                                <div class="alert alert-danger alert-dismissible fade show" role="alert">
                                                     {{ $error }}
                                                     <button type="button" class="btn-close" data-bs-dismiss="alert"
                                                         aria-label="Close"></button>
@@ -217,7 +251,10 @@
 
                                                 <h4 class="mb-3">প্রোডাক্ট সিলেক্ট করুন</h4>
 
-                                                @foreach ($products as $key => $product)
+                                                @foreach ($landing_page->landingProducts as $key => $productItem)
+                                                    @php
+                                                        $product = $productItem->product;
+                                                    @endphp
                                                     <div class="my-3 border border-dark"
                                                         style="background-color: #f7f7f7;">
                                                         <div class="form-check pt-4">
@@ -225,15 +262,18 @@
                                                                 name="product_id"
                                                                 onchange="updateCart({{ $product->id }})"
                                                                 id="product_id_{{ $key }}"
-                                                                value="{{ $product->id }}" {{ $product->id == 66 ? 'checked' : '' }}>
+                                                                value="{{ $product->id }}"
+                                                                {{ $product->id == 66 ? 'checked' : '' }}>
 
-                                                            <label class="form-check-label" for="product_id_{{ $key }}">
+                                                            <label class="form-check-label"
+                                                                for="product_id_{{ $key }}">
                                                                 <div class="d-flex">
                                                                     <img style="height: 80px;"
                                                                         src="{{ $product->related_images[0]['image_link'] }}"
                                                                         alt="">
                                                                     <div class="pricing ms-3">
-                                                                        <h6 style="font-family: arial;" class="fw-bold">{{ $product->product_name }}</h6>
+                                                                        <h6 style="font-family: arial;" class="fw-bold">
+                                                                            {{ $product->product_name }}</h6>
                                                                         <p class="justify">
                                                                             {{ $product->sales_price }} ৳</p>
                                                                     </div>
@@ -254,10 +294,10 @@
                     <div class="col-lg-6 text-center mb-5 mb-lg-0">
                         <i class="bi-phone fs-2 mb-3 text-muted"></i>
 
-                            <h5>
-                                যেকোন প্রয়োজনে যোগাযোগ করুনঃ
-                                01568-095982
-                            </h5>
+                        <h5>
+                            যেকোন প্রয়োজনে যোগাযোগ করুনঃ
+                            01568-095982
+                        </h5>
 
                     </div>
                 </div>
@@ -265,7 +305,7 @@
         </section>
     </main>
     <script>
-        $( document ).ready(function() {
+        $(document).ready(function() {
             updateCart(66);
         });
     </script>

@@ -115,6 +115,23 @@ const actions = {
             window.s_alert("data updated");
         });
     },
+
+    [`soft_delete_${store_prefix}`]: async function (
+        { state, getters, dispatch },
+        id
+    ) {
+        let cconfirm = await window.s_confirm("Delete");
+        if (cconfirm) {
+            await axios
+                .post(`/${api_prefix}/destroy`, { id })
+                .then(({ data }) => {
+                    dispatch(`fetch_${store_prefix}s`);
+                    window.s_alert(
+                        `${store_prefix} has been delete`
+                    );
+                });
+        }
+    },
 }
 
 // mutators

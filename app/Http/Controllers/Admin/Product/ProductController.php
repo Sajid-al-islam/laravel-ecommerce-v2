@@ -3,6 +3,8 @@
 namespace App\Http\Controllers\Admin\Product;
 
 use App\Http\Controllers\Controller;
+use App\Http\Livewire\OfferProduct;
+use App\Models\CategoryProduct;
 use App\Models\ContactMessage;
 use App\Models\DiscountProduct;
 use App\Models\LandingPage;
@@ -11,6 +13,7 @@ use App\Models\LandingPageProduct;
 use App\Models\Product;
 use App\Models\Product\ProductVariantValue;
 use App\Models\Product\ProductVariantValueProduct;
+use App\Models\ProductBrand;
 use App\Models\ProductImage;
 use App\Models\ProductStock;
 use App\Models\ProductStockLog;
@@ -572,6 +575,67 @@ class ProductController extends Controller
         ], 200);
     }
 
+    public function destroyLandingPage()
+    {
+        $validator = Validator::make(request()->all(), [
+            'id' => ['required', 'exists:landing_pages,id'],
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json([
+                'err_message' => 'validation error',
+                'errors' => $validator->errors(),
+            ], 422);
+        }
+        try {
+            DB::beginTransaction();
+            LandingPage::find(request()->id)->delete();
+            LandingPageFaq::where('landing_page_id', request()->id)->delete();
+            LandingPageProduct::where('landing_page_id', request()->id)->delete();
+            DB::commit();
+        } catch (\Throwable $th) {
+            DB::rollBack();
+            Log::info($th->getMessage());
+        }
+
+        return response()->json([
+            'result' => 'deactivated',
+        ], 200);
+    }
+
+    public function destroy()
+    {
+        $validator = Validator::make(request()->all(), [
+            'id' => ['required', 'exists:products,id'],
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json([
+                'err_message' => 'validation error',
+                'errors' => $validator->errors(),
+            ], 422);
+        }
+        try {
+            DB::beginTransaction();
+                Product::where('id', request()->id)->delete();
+                ProductStock::where('product_id', request()->id)->delete();
+                ProductStockLog::where('product_id', request()->id)->delete();
+                ProductImage::where('product_id', request()->id)->delete();
+                CategoryProduct::where('product_id', request()->id)->delete();
+                DiscountProduct::where('product_id', request()->id)->delete();
+                ProductBrand::where('product_id', request()->id)->delete();
+                OfferProduct::where('product_id', request()->id)->delete();
+                ProductVariantValueProduct::where('product_id', request()->id)->delete();
+            DB::commit();
+        } catch (\Throwable $th) {
+            DB::rollBack();
+            Log::info($th->getMessage());
+        }
+        return response()->json([
+            'result' => 'deleted',
+        ], 200);
+    }
+
     public function set_product_offer()
     {
         $validator = Validator::make(request()->all(), [
@@ -602,10 +666,6 @@ class ProductController extends Controller
             return $discount;
         }
         return 'removed';
-    }
-
-    public function destroy()
-    {
     }
 
     public function restore()
