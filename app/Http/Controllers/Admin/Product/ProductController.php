@@ -145,7 +145,92 @@ class ProductController extends Controller
         }
     }
 
-    public function setLandingPageProduct($landing_page_id, $product_ids) {
+    public function showLandingPage() {
+        $data = LandingPage::where('id', request()->id)->with(['landingProducts' => function($q) {
+            $q->with('product');
+        }, 'landingFaq'])->first();
+        return response()->json($data, 200);
+    }
+
+    public function updateLandingPage() {
+
+        $validator = Validator::make(request()->all(), [
+            'id' => ['required', 'exists:landing_pages,id'],
+            'name' => ['required'],
+            'title' => ['required', 'string', 'max:100'],
+            'sub_title' => ['required', 'string', 'max:200'],
+            'first_btn_text' => ['string', 'max:60'],
+            'first_btn_color' => ['max:10'],
+            'second_btn_color' => ['max:10'],
+            'primary_color' => ['max:10'],
+            'secondary_color' => ['max:10'],
+            'delivery_cost' => ['required'],
+            'middle_title' => ['required','string', 'max:200'],
+            'video_link' => ['string'],
+            'image1' => ['nullable', 'image', 'mimes:jpg,png,webp'],
+            'image2' => ['nullable', 'image', 'mimes:jpg,png,webp'],
+            'faq_title' => ['required', 'string']
+        ]);
+
+        $landing_info = request()->except([
+            'image1',
+            'image2',
+            'faqs',
+            'product_ids'
+        ]);
+
+
+        try{
+            if ($validator->fails()) {
+                return response()->json([
+                    'err_message' => 'validation error',
+                    'errors' => $validator->errors(),
+                ], 422);
+            }
+            DB::beginTransaction();
+
+            $landing_page = LandingPage::find(request()->id);
+            $landing_page->fill($landing_info);
+            $landing_page->slug = Str::slug($landing_page->name);
+            $this->setLandingPageProduct($landing_page->id, request()->product_ids, true);
+            $this->setLandingFaq($landing_page->id, request()->faqs, true);
+
+            try {
+                if(request()->hasFile('image1')) {
+                    $path = public_path($landing_page->image_1);
+                    if (file_exists($path)) {
+                        unlink($path);
+                    }
+                    $landing_page->image_1 = $this->store_product_file(request()->file('image1'));
+                }
+                if(request()->hasFile('image2')) {
+                    $path = public_path($landing_page->image_2);
+                    if (file_exists($path)) {
+                        unlink($path);
+                    }
+                    $landing_page->image_2 = $this->store_product_file(request()->file('image2'));
+                }
+                $landing_page->save();
+            } catch (\Throwable $e) {
+                return response()->json($e->getMessage(), 500);
+            }
+            DB::commit();
+
+            $message = "Landing Page Created!";
+            return response()->json([
+                'message' => $message
+            ], 200);
+
+        }catch(Throwable $th) {
+            Log::error($th->getMessage());
+            DB::rollBack();
+        }
+    }
+
+    public function setLandingPageProduct($landing_page_id, $product_ids, $is_update=false) {
+        if($is_update) {
+            LandingPageProduct::where('landing_page_id', $landing_page_id)->delete();
+        }
         if(is_array($product_ids)) {
             foreach ($product_ids as $key => $product_id) {
                 LandingPageProduct::create([
@@ -156,7 +241,10 @@ class ProductController extends Controller
         }
     }
 
-    public function setLandingFaq($landing_page_id, $faqs) {
+    public function setLandingFaq($landing_page_id, $faqs, $is_update=false) {
+        if($is_update) {
+            LandingPageFaq::where('landing_page_id', $landing_page_id)->delete();
+        }
         if(!empty($faqs)) {
             $faqs = json_decode($faqs);
             foreach($faqs as $faq) {

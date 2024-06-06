@@ -3,19 +3,7 @@
         'title' => 'Organic oil',
     ],
 ])
-<style>
-    .outlined_btn {
-        border: 2px solid {{ !empty($landing_page->secondary_color) ? $landing_page->secondary_color : '#fcd957' }};
-        color: {{ !empty($landing_page->secondary_color) ? $landing_page->secondary_color : '#fcd957' }};
-        font-size: 20px;
-    }
 
-    .outlined_btn:hover {
-        border: 2px solid {{ !empty($landing_page->secondary_color) ? $landing_page->secondary_color : '#fcd957' }};
-        color: {{ !empty($landing_page->secondary_color) ? $landing_page->secondary_color : '#fcd957' }};
-        font-size: 20px;
-    }
-</style>
 @section('content')
     <main class="main-content">
         <header class="masthead">
@@ -94,14 +82,13 @@
                     @foreach ($landing_page->landingFaq as $key => $faq)
                         <div class="accordion-item">
                             <h2 class="accordion-header" id="heading{{ $key }}">
-                                <button class="accordion-button" type="button" data-bs-toggle="collapse"
+                                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
                                     data-bs-target="#collapse{{ $key }}"
-                                    aria-expanded="{{ $key == 0 ? true : '' }}"
                                     aria-controls="collapse{{ $key }}">
                                     {{ $faq->title }}
                                 </button>
                             </h2>
-                            <div id="collapse{{ $key }}" class="accordion-collapse collapse show"
+                            <div id="collapse{{ $key }}" class="accordion-collapse collapse"
                                 aria-labelledby="heading{{ $key }}" data-bs-parent="#accordionExample">
                                 <div class="accordion-body">
                                     {{ $faq->description }}

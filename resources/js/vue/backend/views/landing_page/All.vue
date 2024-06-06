@@ -74,6 +74,7 @@
                             <table-th :sort="true" :tkey="'id'" :title="'ID'" :ariaLable="'id'"/>
                             <table-th :sort="false" :title="'Image'"/>
                             <table-th :sort="true" :tkey="'name'" :title="'Name'" />
+                            <table-th :sort="true" :tkey="'slug'" :title="'Link'" />
                             <th aria-label="actions">Actions</th>
                         </tr>
                     </thead>
@@ -93,18 +94,23 @@
                                 </span>
                             </td>
                             <td>
+                                <span class="text-warning cursor_pointer">
+                                    <a target="_blank" :href="`/funnel/${item.slug}`">View Page</a>
+                                </span>
+                            </td>
+                            <td>
                                 <div class="table_actions">
                                     <a href="#" @click.prevent="()=>''" class="btn btn-sm btn-outline-secondary">
                                         <i class="fa fa-gears"></i>
                                     </a>
                                     <ul>
-                                        <li>
+                                        <!-- <li>
                                             <a href="" @click.prevent="call_store(`set_${store_prefix}`,item)">
                                                 <i class="fa text-info fa-eye"></i>
                                                 Quick View
                                             </a>
-                                        </li>
-                                        <li>
+                                        </li> -->
+                                        <!-- <li>
                                             <permission-button
                                                 :permission="'can_edit'"
                                                 :to="{name:`Details${route_prefix}`,params:{id:item.id}}"
@@ -112,7 +118,7 @@
                                                 <i class="fa text-secondary fa-eye"></i>
                                                 Details
                                             </permission-button>
-                                        </li>
+                                        </li> -->
                                         <li>
                                             <permission-button
                                                 :permission="'can_edit'"

@@ -69,7 +69,7 @@
                                     />
                                 </div>
 
-                                <div class="seo_section full_width mt-5">
+                                <!-- <div class="seo_section full_width mt-5">
                                     <div class="heading mb-4">
                                         <h4 class="d-flex justify-content-center">Colors</h4>
                                     </div>
@@ -107,7 +107,7 @@
                                             />
                                         </div>
                                     </div>
-                                </div>
+                                </div> -->
 
 
                                 <div class="full_width mb-2 mt-2 row">
