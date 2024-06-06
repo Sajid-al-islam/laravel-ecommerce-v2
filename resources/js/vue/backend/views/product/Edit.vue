@@ -97,12 +97,20 @@
                                 <div class="full_width form-group d-grid align-content-start gap-1 mb-2 " >
                                     <div>
                                         <label class="mb-2 text-capitalize">
-                                            Select Cateogry
+                                            Previous Category
                                         </label>
                                         <!-- <CategoryManagementModal/> -->
                                         <nested-category-modal></nested-category-modal>
                                     </div>
+                                    <label class="text-capitalize">
+                                        Select Cateogry
+                                    </label>
+                                    <select class="form-select" name="category_id" id="category_id">
+                                        <option value="">Select category</option>
+                                        <option v-for="(cagtegory, index) in get_category_all_json" :key="index" :value="cagtegory.id">{{ cagtegory.name }}</option>
+                                    </select>
                                 </div>
+
 
                                 <div class=" form-group full_width d-grid align-content-start gap-1 mb-2 " >
                                     <div>
@@ -329,6 +337,7 @@ export default {
         this.set_clear_selected_categorys(false);
         this.set_clear_selected_brands(false);
         await this.fetch_all_variant_json();
+        this.fetch_category_all_json();
         await this[`fetch_${store_prefix}`]({id: this.$route.params.id});
     },
     watch: {
@@ -356,6 +365,7 @@ export default {
             `update_${store_prefix}`,
             `fetch_${store_prefix}`,
             `fetch_all_variant_json`,
+            `fetch_category_all_json`,
         ]),
         ...mapMutations([
             `set_clear_selected_categorys`,
@@ -411,12 +421,13 @@ export default {
     },
     computed: {
         ...mapGetters({
+            get_category_all_json: `get_category_all_json`,
             selected_cats: `get_category_selected`,
             [`get_${store_prefix}`]: `get_${store_prefix}`,
             product: `get_${store_prefix}`,
             'get_all_variant_json': 'get_all_variant_json',
         })
-    } 
+    }
 };
 </script>
 

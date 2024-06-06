@@ -111,8 +111,11 @@
                                         <label class="mb-2 text-capitalize">
                                             Select Cateogry
                                         </label>
-                                        <!-- <CategoryManagementModal/> -->
-                                        <nested-category-modal></nested-category-modal>
+                                        <select class="form-select" name="category_id" id="category_id">
+                                            <option value="">Select category</option>
+                                            <option v-for="(cagtegory, index) in get_category_all_json" :key="index" :value="cagtegory.id">{{ cagtegory.name }}</option>
+                                        </select>
+                                        <!-- <nested-category-modal></nested-category-modal> -->
                                     </div>
                                 </div>
 
@@ -287,7 +290,7 @@
 <script>
 import { mapActions, mapGetters, mapMutations } from 'vuex'
 import InputField from '../components/InputField.vue'
-import NestedCategoryModal from '../category/components/NestedCategoryModal.vue';
+import CategoryManagementModal from '../category/components/ManagementModal.vue';
 import BrandManagementModal from '../brand/components/ManagementModal.vue';
 /** store and route prefix for export object use */
 import PageSetup from './PageSetup';
@@ -295,7 +298,7 @@ const {route_prefix, store_prefix} = PageSetup;
 import Editor from '@tinymce/tinymce-vue'
 
 export default {
-    components: { InputField, BrandManagementModal, NestedCategoryModal, Editor },
+    components: { InputField, BrandManagementModal, CategoryManagementModal, Editor },
     data: function(){
         return {
             /** store prefix for JSX */
@@ -310,6 +313,7 @@ export default {
     created: function () {
         this.set_clear_selected_categorys(false);
         this.fetch_all_variant_json();
+        this.fetch_category_all_json();
     },
     watch: {
         description_value: function(v){
@@ -327,6 +331,7 @@ export default {
             `store_${store_prefix}`,
             `generateSlug`,
             `fetch_all_variant_json`,
+            `fetch_category_all_json`,
         ]),
         ...mapMutations([
             `set_clear_selected_categorys`,
@@ -368,7 +373,8 @@ export default {
     },
     computed: {
         ...mapGetters([
-            'get_all_variant_json'
+            'get_all_variant_json',
+            `get_category_all_json`,
         ])
     }
 };

@@ -174,18 +174,7 @@
                                                 :click_param="item.id"
                                                 :classList="''">
                                                 <i class="fa text-danger fa-trash"></i>
-                                                Deactive
-                                            </permission-button>
-                                        </li>
-                                        <li v-else>
-                                            <permission-button
-                                                :permission="'can_delete'"
-                                                :to="{}"
-                                                :click="()=>call_store(`restore_${store_prefix}`,item.id)"
-                                                :click_param="item.id"
-                                                :classList="''">
-                                                <i class="fa text-danger fa-recycle"></i>
-                                                Activate
+                                                Delete
                                             </permission-button>
                                         </li>
                                     </ul>

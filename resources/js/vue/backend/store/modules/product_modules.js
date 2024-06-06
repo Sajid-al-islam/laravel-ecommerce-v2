@@ -58,9 +58,9 @@ const actions = {
         // console.log(form_data, form_inputs, form_values);
         const {get_category_selected: category, get_brand_selected: brand} = getters;
 
-        category.forEach((i)=> {
-            form_data.append('selected_categories[]',i.id);
-        });
+        // category.forEach((i)=> {
+        //     form_data.append('selected_categories[]',i.id);
+        // });
 
         if(brand.length){
             form_data.append('brand_id',brand[0].id);
@@ -87,9 +87,9 @@ const actions = {
         const {form_values, form_inputs, form_data} = window.get_form_data(`.update_form`);
         const {get_category_selected: category, get_brand_selected: brand} = getters;
 
-        category.forEach((i)=> {
-            form_data.append('selected_categories[]',i.id);
-        });
+        // category.forEach((i)=> {
+        //     form_data.append('selected_categories[]',i.id);
+        // });
         if(brand.length){
             form_data.append('brand_id',brand[0].id);
         }
@@ -127,7 +127,7 @@ const actions = {
                 .then(({ data }) => {
                     dispatch(`fetch_${store_prefix}s`);
                     window.s_alert(
-                        `${store_prefix} has been delete`
+                        `${store_prefix} has been deleted`
                     );
                 });
         }

@@ -3,7 +3,6 @@
 namespace App\Http\Controllers\Admin\Product;
 
 use App\Http\Controllers\Controller;
-use App\Http\Livewire\OfferProduct;
 use App\Models\CategoryProduct;
 use App\Models\ContactMessage;
 use App\Models\DiscountProduct;
@@ -293,7 +292,8 @@ class ProductController extends Controller
             'product_name' => ['required'],
             'sales_price' => ['required'],
             'brand_id' => ['required'],
-            'selected_categories' => ['required'],
+            // 'selected_categories' => ['required'],
+            'category_id' => ['required'],
             'specification' => ['required'],
             'description' => ['required'],
             'search_keywords' => ['required'],
@@ -319,6 +319,7 @@ class ProductController extends Controller
         }
 
         $product_info = request()->except([
+            'category_id',
             'variants',
             'selected_categories',
             'image1',
@@ -329,7 +330,7 @@ class ProductController extends Controller
             'image6',
         ]);
 
-        $product_info['selected_categories'] = json_encode(request()->selected_categories);
+        $product_info['selected_categories'] = json_encode([request()->category_id]);
         // $product_info['custom_fields'] = $request->custom_fields;
         // $product_info['hs_codes'] = $request->hs_codes;
 
@@ -345,20 +346,30 @@ class ProductController extends Controller
             }
         }
 
+
         if (count($related_images) > 0) {
-            $product = Product::create($product_info);
-            $product->categories()->attach(request()->selected_categories);
+            try {
+                DB::beginTransaction();
+                    $product = Product::create($product_info);
+                    // $product->categories()->attach(request()->selected_categories);
+                    $product->categories()->sync([request()->category_id]);
 
-            $this->product_stock_set(null, $product->id, $product->created_at, $product->stock);
-            $this->product_stock_log_set($product->id, $product->stock, 'initial');
+                    $this->product_stock_set(null, $product->id, $product->created_at, $product->stock);
+                    $this->product_stock_log_set($product->id, $product->stock, 'initial');
 
-            $this->product_variant_set(request()->variants, $product->id);
+                    $this->product_variant_set(request()->variants, $product->id);
 
-            for ($i = 0; $i < count($related_images); $i++) {
-                $related_iamge = $related_images[$i];
-                $related_iamge->product_id = $product->id;
-                $related_iamge->save();
+                    for ($i = 0; $i < count($related_images); $i++) {
+                        $related_iamge = $related_images[$i];
+                        $related_iamge->product_id = $product->id;
+                        $related_iamge->save();
+                    }
+                DB::commit();
+            } catch (\Throwable $th) {
+                DB::rollBack();
+                Log::info($th->getMessage());
             }
+
 
             $message = "product created!";
             return response()->json([
@@ -475,7 +486,8 @@ class ProductController extends Controller
             'product_name' => ['required'],
             'sales_price' => ['required'],
             'brand_id' => ['required'],
-            'selected_categories' => ['required'],
+            // 'selected_categories' => ['required'],
+            'category_id' => ['required'],
             'specification' => ['required'],
             'description' => ['required'],
             'search_keywords' => ['required'],
@@ -497,6 +509,7 @@ class ProductController extends Controller
 
         $product_info = request()->except([
             'variants',
+            'category_id',
             'selected_categories',
             'image1',
             'image2',
@@ -507,7 +520,7 @@ class ProductController extends Controller
             'stock_log_type',
             'updated_stock',
         ]);
-        $product_info['selected_categories'] = json_encode(request()->selected_categories);
+        $product_info['selected_categories'] = json_encode([request()->category_id]);
 
         $product = Product::find(request()->id);
         $product->fill($product_info);
@@ -545,7 +558,7 @@ class ProductController extends Controller
         $this->product_variant_set(request()->variants, $product->id);
 
         $product->save();
-        $product->categories()->sync(request()->selected_categories);
+        $product->categories()->sync([request()->category_id]);
 
         $stock_qty = request()->updated_stock;
         $type = request()->stock_log_type;
@@ -709,19 +722,24 @@ class ProductController extends Controller
                 ProductStock::where('product_id', request()->id)->delete();
                 ProductStockLog::where('product_id', request()->id)->delete();
                 ProductImage::where('product_id', request()->id)->delete();
-                CategoryProduct::where('product_id', request()->id)->delete();
+                // CategoryProduct::where('product_id', request()->id)->delete();
+                DB::table('category_product')->where('product_id', request()->id)->delete();
                 DiscountProduct::where('product_id', request()->id)->delete();
                 ProductBrand::where('product_id', request()->id)->delete();
-                OfferProduct::where('product_id', request()->id)->delete();
+                // DB::table('product_offers')->where('product_id', request()->id)->delete();
                 ProductVariantValueProduct::where('product_id', request()->id)->delete();
             DB::commit();
+            return response()->json([
+                'result' => 'deleted',
+            ], 200);
         } catch (\Throwable $th) {
             DB::rollBack();
             Log::info($th->getMessage());
+            return response()->json([
+                'result' => 'something went wrong!',
+            ], 400);
         }
-        return response()->json([
-            'result' => 'deleted',
-        ], 200);
+
     }
 
     public function set_product_offer()
