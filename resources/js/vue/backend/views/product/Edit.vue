@@ -416,7 +416,7 @@ export default {
             product: `get_${store_prefix}`,
             'get_all_variant_json': 'get_all_variant_json',
         })
-    }
+    } 
 };
 </script>
 

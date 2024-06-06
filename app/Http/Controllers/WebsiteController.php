@@ -58,7 +58,7 @@ class WebsiteController extends Controller
             $q->with('product');
         }, 'landingFaq'])->first();
         $products = Product::where('is_hair', 1)->get();
-        return view('frontend.organic_oil', compact('landing_page', 'products'));
+        return view('frontend.landing_page', compact('landing_page', 'products'));
     }
 
     public function invoice_download($invoice)

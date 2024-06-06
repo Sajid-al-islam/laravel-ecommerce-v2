@@ -108,7 +108,7 @@ Route::group(['prefix' => '', 'namespace' => "Controllers"], function () {
 });
 
 Route::prefix('')->namespace('Controllers')->group(function () {
-    // Route::get('/organic-oil', "WebsiteController@organic_oil")->name('organic_oil');
+    Route::get('/organic-oil', "WebsiteController@organic_oil")->name('organic_oil');
     Route::get('/funnel/{slug}', "WebsiteController@landingPage")->name('landing_page');
     Route::get('/about-us', "WebsiteController@aboutus")->name('about_us');
     Route::get('/privacy-policy', "WebsiteController@privacy_policy")->name('privacy_policy');
