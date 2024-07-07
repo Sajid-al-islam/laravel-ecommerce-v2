@@ -8,12 +8,14 @@ const {store_prefix, api_prefix, route_prefix} = test_module;
 const state = {
     ...test_module.states(),
     all_variant_json: [],
+    [`${store_prefix}_description`]: null,
 };
 
 // get state
 const getters = {
     ...test_module.getters(),
     get_all_variant_json: (state)=>state.all_variant_json,
+    [`get_${store_prefix}_description`]: (state)=> state[`${store_prefix}_description`],
 };
 
 // actions
@@ -64,6 +66,7 @@ const actions = {
         });
         // form_data.append('product_id',product[0].id);
         form_data.append('faqs',faqs);
+        form_data.append('middle_title', state[`${store_prefix}_description`]);
 
         axios.post(`/${api_prefix}/store`,form_data)
             .then(res=>{
@@ -93,6 +96,7 @@ const actions = {
         });
         // form_data.append('product_id',product[0].id);
         form_data.append('faqs',faqs);
+        form_data.append('middle_title', state[`${store_prefix}_description`]);
         form_data.append("id", state[store_prefix].id);
 
         axios.post(`/${api_prefix}/update`,form_data)
@@ -134,7 +138,9 @@ const actions = {
 // console.log(test_module.mutations());
 const mutations = {
     ...test_module.mutations(),
-
+    [`set_${store_prefix}_description`]: function(state, data){
+        state[`${store_prefix}_description`] = data;
+    },
 };
 
 

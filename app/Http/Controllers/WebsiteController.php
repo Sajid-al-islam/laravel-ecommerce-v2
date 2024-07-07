@@ -58,6 +58,9 @@ class WebsiteController extends Controller
             $q->with('product');
         }, 'landingFaq'])->first();
         $products = Product::where('is_hair', 1)->get();
+        if(empty($landing_page)) {
+            abort(404, 'No funnel found');
+        }
         return view('frontend.landing_page', compact('landing_page', 'products'));
     }
 

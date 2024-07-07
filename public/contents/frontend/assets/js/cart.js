@@ -166,7 +166,7 @@ async function checkout(event) {
     })
 }
 
-async function updateCart(product_id) {
+async function updateCart(product_id, delivery_cost=0) {
     // await fetch(`/update-cart-html/${product_id}`, {
     //     method: "GET",
     //     headers: {
@@ -185,11 +185,18 @@ async function updateCart(product_id) {
     //         $('#cart_section').html(res.data);
     //     }
     // })
-
+    $('#landing_page_product_id').val(product_id);
+    var csrfToken = $('meta[name="csrf-token"]').attr('content');
     $.ajax({
-        url: `/update-cart-html/${product_id}`,
-        type: 'GET',
+        url: `/update-cart-html`,
+        type: 'POST',
         dataType: 'json',
+        data: {
+            // Add any data you need to send here
+            _token: csrfToken,  // Add CSRF token for security
+            product_id: product_id,  // Example data
+            delivery_cost: delivery_cost
+        },
         success: function(data) {
             console.log('success', data);
             $('#cart_section').html(data.result);

@@ -36,12 +36,15 @@
                                     />
                                 </div>
 
-                                <div class="form-group d-grid align-content-start gap-1 mb-2 " >
-                                    <input-field
-                                        :label="`middle text`"
-                                        :name="`middle_title`"
-                                        :type="`text`"
-                                    />
+                                <div class="form-group d-grid align-content-start full_width gap-1 mb-2 " >
+                                    <label for="description">Middle Section</label>
+                                    <div id="description">
+                                        <editor
+                                            v-model="description_value"
+                                            api-key="d1wxddm2y8oc8aelf9yljfgq4553ntkqd0slwsh4tzyw05cg"
+                                            :init="{height: 200}"
+                                        />
+                                    </div>
                                 </div>
 
                                 <div class="form-group d-grid align-content-start gap-1 mb-2 " >
@@ -229,12 +232,6 @@ export default {
     watch: {
         description_value: function(v){
             this[`set_${store_prefix}_description`](v);
-        },
-        specification_value: function(v){
-            this[`set_${store_prefix}_specification`](v);
-        },
-        short_description_value: function(v){
-            this[`set_${store_prefix}_short_description`](v);
         },
     },
     methods: {

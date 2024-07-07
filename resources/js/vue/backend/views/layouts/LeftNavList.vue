@@ -28,7 +28,8 @@
             <left-nav-list-group :role_permissions="['super_admin','admin']" :icon="`fa fa-box`" :text="`Product`" :alert_count="0">
                 <left-nav-list-item :to="'CreateProduct'" :text="'Create product'" />
                 <left-nav-list-item :to="'AllProduct'" :text="'Product Lists'" />
-                <left-nav-list-item :to="'Offer'" :text="'Offer Set'" />
+                <left-nav-list-item :to="'AllOffers'" :text="'Product Offers'" />
+                <!-- <left-nav-list-item :to="'Offer'" :text="'Offer Set'" /> -->
                 <!-- <left-nav-list-item :to="'AllProduct'" :text="'Product categories'" /> -->
             </left-nav-list-group>
 
@@ -82,6 +83,11 @@
             <left-nav-list-group :role_permissions="['super_admin','admin']" :icon="`fa fa-list`" :text="`Banners`" :alert_count="0">
                 <left-nav-list-item :to="'CreateBanner'" :text="'Create Banner'" />
                 <left-nav-list-item :to="'AllBanner'" :text="'Banner List'" />
+            </left-nav-list-group>
+
+            <left-nav-list-group :role_permissions="['super_admin','admin']" :icon="`fa fa-ticket-simple`" :text="`Coupons`" :alert_count="0">
+                <left-nav-list-item :to="'CreateCoupon'" :text="'Create Coupon'" />
+                <left-nav-list-item :to="'AllCoupon'" :text="'Coupon List'" />
             </left-nav-list-group>
 
             <li class="navigation-header">

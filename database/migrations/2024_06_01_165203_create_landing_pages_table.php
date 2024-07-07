@@ -24,7 +24,7 @@ class CreateLandingPagesTable extends Migration
             $table->string("second_btn_color", 10)->nullable();
             $table->string("primary_color", 10)->default('002411')->nullable();
             $table->string("secondary_color", 10)->default('fcd957')->nullable();
-            $table->string("middle_title", 200)->nullable();
+            $table->text("middle_title")->nullable();
             $table->text("video_link")->nullable();
             $table->text("imaage_1")->nullable();
             $table->text("imaage_2")->nullable();

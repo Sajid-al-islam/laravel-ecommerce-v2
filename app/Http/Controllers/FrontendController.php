@@ -12,6 +12,7 @@ use App\Models\ProductReview;
 use App\Models\ProductStockLog;
 use App\Models\Setting;
 use App\Models\User;
+use App\Services\CouponService;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -107,13 +108,34 @@ class FrontendController extends Controller
         if (Auth::user()) {
             $order->user_id = Auth::user()->id;
         }
+        $coupon_discount = 0;
+        $coupon = null;
 
-        $order->total_price = $cart_total + $shipping_charge;
+        $total_payable = $cart_total + $shipping_charge - $coupon_discount;
+
+        if(!empty($request->coupon) && (int) $request->coupon_discount > 0) {
+            $couopn_validation = (new CouponService())->validateCoupon($request->coupon);
+
+            if($couopn_validation['success']) {
+                $coupon_discount = $request->coupon_discount;
+                $coupon = $request->coupon;
+            }
+        }
+        $total_payable = $total_payable - $coupon_discount;
+        $total_discount = 0;
+
+        if(!empty($request->total_discount) && is_numeric($request->total_discount)) {
+            $total_discount = $request->total_discount;
+        }
+
+        $total_discount = $total_discount + $coupon_discount;
+
+        $order->total_price = $total_payable;
         $order->sub_total = $cart_total;
         $order->delivery_cost = $shipping_charge;
-        $order->total_discount = $request->total_discount ? $request->total_discount : 0;
-        $order->order_coupon = $request->coupon;
-        $order->coupon_discount = $request->coupon_discount ? $request->coupon_discount : 0;
+        $order->total_discount = $total_discount;
+        $order->order_coupon = $coupon;
+        $order->coupon_discount = $coupon_discount;
         $order->payment_status = 'Pending';
         $order->delivery_method = $request->shipping_method;
 

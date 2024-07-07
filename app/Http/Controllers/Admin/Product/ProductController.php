@@ -81,6 +81,7 @@ class ProductController extends Controller
     }
 
     public function storeLandingPage() {
+        // dd(request()->all());
         $validator = Validator::make(request()->all(), [
             'name' => ['required', 'unique:landing_pages'],
             'title' => ['required', 'string', 'max:100'],
@@ -91,7 +92,7 @@ class ProductController extends Controller
             'primary_color' => ['max:10'],
             'secondary_color' => ['max:10'],
             'delivery_cost' => ['required'],
-            'middle_title' => ['required','string', 'max:200'],
+            'middle_title' => ['required','string'],
             'video_link' => ['string'],
             'image1' => ['nullable', 'image', 'mimes:jpg,png,webp'],
             'image2' => ['nullable', 'image', 'mimes:jpg,png,webp'],
@@ -164,7 +165,7 @@ class ProductController extends Controller
             'primary_color' => ['max:10'],
             'secondary_color' => ['max:10'],
             'delivery_cost' => ['required'],
-            'middle_title' => ['required','string', 'max:200'],
+            'middle_title' => ['required','string'],
             'video_link' => ['string'],
             'image1' => ['nullable', 'image', 'mimes:jpg,png,webp'],
             'image2' => ['nullable', 'image', 'mimes:jpg,png,webp'],
@@ -772,6 +773,48 @@ class ProductController extends Controller
             return $discount;
         }
         return 'removed';
+    }
+
+    public function allDiscountProduct() {
+        $paginate = 20;
+
+        $query = DiscountProduct::latest();
+
+        if (request()->has('search_key')) {
+            $key = request()->search_key;
+            $query->where(function ($q) use ($key) {
+                return $q->where('id', $key)
+                    ->orWhere('discount_last_date', $key)
+                    ->orWhere('main_price', $key)
+                    ->orWhere('discount_last_date', 'LIKE', '%' . $key . '%')
+                    ->orWhere('sales_price', 'LIKE', '%' . $key . '%');
+            });
+        }
+        $users = $query->with('product')->paginate($paginate);
+        return response()->json($users);
+    }
+
+    public function destroyProductOffer()
+    {
+        $validator = Validator::make(request()->all(), [
+            'id' => ['required', 'exists:discount_products,id'],
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json([
+                'err_message' => 'validation error',
+                'errors' => $validator->errors(),
+            ], 422);
+        }
+        try {
+            DiscountProduct::where('id', request()->id)->delete();
+        } catch (\Throwable $th) {
+            Log::info($th->getMessage());
+        }
+
+        return response()->json([
+            'result' => 'deleted',
+        ], 200);
     }
 
     public function restore()

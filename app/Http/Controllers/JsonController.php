@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Category;
 use App\Models\Product;
+use App\Services\CouponService;
 use Illuminate\Http\Request;
 
 class JsonController extends Controller
@@ -161,22 +162,36 @@ class JsonController extends Controller
         return response()->json($products);
     }
 
-    public function update_cart_html($product_id) {
+    public function update_cart_html() {
+        $product_id = request()->product_id;
+        $delivery_cost = request()->delivery_cost;
         $empty_cart = (new CartController())->emptyCart();
 
         $cart = (new CartController())->add_to_cart($product_id, 1);
 
         $product = Product::where('id', $product_id)->first();
 
-        $result = view('frontend.cart-table', compact('product'))->render();
+        $result = view('frontend.cart-table', compact('product', 'delivery_cost'))->render();
 
         return response()->json([
             'status' => true,
             'result' => $result,
             'message' => 'Data loaded',
         ]);
+    }
 
+    public function applyCoupon(Request $request)
+    {
+        $code = $request->input('coupon_code');
+        // $product = Product::find($request->input('product_id'));
 
+        $result = (new CouponService)->applyCoupon($code);
+
+        if (!$result['success']) {
+            return response()->json(['message' => $result['message']], 400);
+        }
+
+        return response()->json(['message' => $result['message'], 'discount' => $result['discount']]);
     }
 
 }

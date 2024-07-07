@@ -4,6 +4,7 @@ import CreateProduct from '../../views/product/Create'
 import EditProduct from '../../views/product/Edit'
 import DetailsProduct from '../../views/product/Details'
 import Offer from '../../views/product/Offer.vue'
+import AllOffers from '../../views/product/AllOffer.vue'
 import ImportProduct from '../../views/product/Import'
 
 export default {
@@ -32,6 +33,11 @@ export default {
             path: 'set-offer',
             name: 'Offer',
             component: Offer,
+        },
+        {
+            path: 'all-offers',
+            name: 'AllOffers',
+            component: AllOffers,
         },
         {
             path: 'edit/:id',

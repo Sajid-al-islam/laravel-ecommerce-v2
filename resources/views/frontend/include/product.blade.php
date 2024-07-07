@@ -30,7 +30,7 @@
                 <a class="product-item-thumb" href="{{ route('product_details', $data) }}">
                     @if (count($product->related_images) > 0)
                         <img src="{{ $product->related_images[0]['image_link'] }}" width="228" height="228"
-                            alt="Image-Ctgcomputer">
+                            alt="Image-Premiumshop" loading="lazy">
                     @endif
                 </a>
                 @if ($product->discounts)

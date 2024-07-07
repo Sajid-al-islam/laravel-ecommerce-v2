@@ -42,7 +42,7 @@
   padding: 6px 5px;
 }
 #nav #nav_list > ul li a svg {
-  fill: white;
+  fill: #333;
 }
 #nav #nav_list > ul li a:hover {
   color: #ff7800;
@@ -188,7 +188,7 @@
 }
 @media (max-width: 991.9px) {
   #nav #nav_list > ul {
-    background-color: #051f20;
+    background-color: #fff;
     display: block;
     position: fixed;
     width: 100%;
@@ -296,7 +296,7 @@
   fill: tomato;
 }
 #nav #nav_list .nav_close svg {
-  fill: white;
+  fill: #333;
   height: 25px !important;
 }
 @media (max-width: 991.9px) {

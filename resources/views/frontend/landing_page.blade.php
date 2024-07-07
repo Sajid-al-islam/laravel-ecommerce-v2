@@ -1,6 +1,6 @@
 @extends('frontend.layouts.layout_blank', [
     'meta' => [
-        'title' => 'Organic oil',
+        'title' => $landing_page->title,
     ],
 ])
 
@@ -9,6 +9,11 @@
         <header class="masthead">
             <div class="container px-4 px-lg-5 h-100">
                 <div class="row gx-4 gx-lg-5 h-100 align-items-center justify-content-center text-center">
+                    <div class="landing_logo mb-2">
+                        <a href="/">
+                            <img src="/{{ $setting->header_logo }}" alt="logo">
+                        </a>
+                    </div>
                     <div class="col-lg-8 align-self-end">
                         <h1 class="text-white font-weight-bold">{{ $landing_page->title }}</h1>
                         <hr class="divider" />
@@ -32,7 +37,7 @@
         </section>
         <section class="page-section" id="services">
             <div class="container px-4 px-lg-5">
-                <h2 class="text-center mt-0">{{ $landing_page->middle_title }}</h2>
+                <h2 class="text-center mt-0">{!! $landing_page->middle_title !!}</h2>
                 <div class="d-flex justify-content-center my-5">
                     @php
                         if (!empty($landing_page->image_1) && !empty($landing_page->image_2)) {
@@ -162,6 +167,7 @@
                     <div class="col-12">
                         <div class="container">
                             <main id="billing">
+
                                 <form action="{{ route('frontend_checkout') }}" method="POST">
                                     @csrf
                                     <div class="row g-5" style="font-family: 'Hind Siliguri';">
@@ -172,7 +178,28 @@
                                             <ul class="list-group mb-3" id="cart_section">
 
                                             </ul>
-
+                                            <div class="card mb-3">
+                                                <div class="card-header">
+                                                    কুপন
+                                                </div>
+                                                <div class="card-body">
+                                                    <div class="coupon_area">
+                                                        <form class="form-group" id="coupon_form">
+                                                            <div class="row">
+                                                                <div class="col-8">
+                                                                    <input type="text" class="form-control" name="coupon_code"
+                                                                        placeholder="কুপন কোড থাকলে এপ্লাই করুন">
+                                                                </div>
+                                                                <div class="col-4">
+                                                                    <button class="btn btn-primary" type="button" id="apply-coupon-button">Apply
+                                                                        Coupon</button>
+                                                                </div>
+                                                                <div id="coupon-message" style="display: none;"></div>
+                                                            </div>
+                                                        </form>
+                                                    </div>
+                                                </div>
+                                            </div>
                                             <div class="card">
                                                 <div class="card-header">
                                                     ক্যাশ অন ডেলিভারি
@@ -189,7 +216,8 @@
                                             <h4 class="mb-3">অর্ডার কনফার্ম করতে</h4>
 
                                             @foreach ($errors->all() as $error)
-                                                <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                                                <div class="alert alert-danger alert-dismissible fade show"
+                                                    role="alert">
                                                     {{ $error }}
                                                     <button type="button" class="btn-close" data-bs-dismiss="alert"
                                                         aria-label="Close"></button>
@@ -212,6 +240,11 @@
                                                         নাম্বার লিখুন</label>
                                                     <input type="text" name="mobile_number" class="form-control"
                                                         id="mobile_no" placeholder="" required="" />
+
+                                                    <input name="coupon_discount" id="coupon_discount" type="hidden" value="0">
+                                                    <input name="coupon_applied" id="coupon_applied" type="hidden" value="no">
+                                                    <input name="coupon" id="coupon" type="hidden" value="">
+
                                                     <div class="invalid-feedback">
                                                         দয়া করে আপনার মোবাইল নাম্বারটি লিখুন
                                                     </div>
@@ -220,7 +253,7 @@
                                                 {{-- <input type="hidden" name="product_id" value="{{ $product->id }}"> --}}
                                                 <input type="hidden" name="shipping_method" value="home_delivery">
                                                 <input type="hidden" name="payment_method" value="cod">
-                                                <input type="hidden" name="delivery_charge" value="0">
+                                                <input type="hidden" name="delivery_charge" value="{{ !empty($landing_page->delivery_cost) ? $landing_page->delivery_cost : 0 }}">
                                                 <input type="hidden" name="source" value="landing">
 
 
@@ -250,7 +283,7 @@
                                                                 onchange="updateCart({{ $product->id }})"
                                                                 id="product_id_{{ $key }}"
                                                                 value="{{ $product->id }}"
-                                                                {{ $product->id == 66 ? 'checked' : '' }}>
+                                                                {{ $key < 1 ? 'checked' : '' }}>
 
                                                             <label class="form-check-label"
                                                                 for="product_id_{{ $key }}">
@@ -293,7 +326,55 @@
     </main>
     <script>
         $(document).ready(function() {
-            updateCart({{ $landing_page->landingProducts[0]->product->id }});
+            var landingProductId = {{ $landing_page->landingProducts[0]->product->id }};
+            var delivery_cost = {{ $landing_page->delivery_cost }}; // Convert PHP object to JSON
+
+            updateCart(landingProductId, delivery_cost);
+
+            $('#apply-coupon-button').click(function(e) {
+                e.preventDefault();
+
+                var couponCode = $('input[name="coupon_code"]').val();
+                $('#coupon').val(couponCode);
+
+                $.ajax({
+                    url: '/apply-coupon',
+                    type: 'POST',
+                    data: {
+                        coupon_code: couponCode,
+                        _token: '{{ csrf_token() }}'
+                    },
+                    success: function(data) {
+                        var messageDiv = $('#coupon-message');
+                        if (data.discount) {
+                            messageDiv.text('Coupon applied successfully! Discount: ' + data.discount);
+                            messageDiv.css('color', 'green');
+                            let html = `${data.discount} ৳`
+                            $('#discount_landing').html(html)
+                            $('#coupon_discount').val(data.discount);
+                            $('#coupon_applied').val('yes');
+                        }
+                        messageDiv.show();
+                    },
+                    error: function(xhr, status, error) {
+                        var messageDiv = $('#coupon-message');
+                        var response = xhr.responseJSON;
+                        if (response && response.message) {
+                            messageDiv.text(response.message);
+                        } else {
+                            messageDiv.text('An error occurred while applying the coupon. Please try again.');
+                        }
+                        messageDiv.css('color', 'red');
+                        messageDiv.show();
+                        console.error('Error:', error);
+                        $('#coupon').val('');
+                        $('#coupon_discount').val(0);
+                        $('#coupon_applied').val('no');
+                    }
+                });
+            });
         });
     </script>
+
+
 @endsection

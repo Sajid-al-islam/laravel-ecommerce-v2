@@ -97,6 +97,8 @@ Route::group(
                 Route::post('/canvas-update','Admin\Product\ProductController@canvas_update');
                 Route::post('/soft-delete','Admin\Product\ProductController@soft_delete');
                 Route::post('/set-offer','Admin\Product\ProductController@set_product_offer');
+                Route::get('/all-offers','Admin\Product\ProductController@allDiscountProduct');
+                Route::post('/offers/destroy','Admin\Product\ProductController@destroyProductOffer');
                 Route::post('/destroy','Admin\Product\ProductController@destroy');
                 Route::post('/restore','Admin\Product\ProductController@restore');
                 Route::post('/bulk-import','Admin\Product\ProductController@bulk_import');
@@ -109,6 +111,14 @@ Route::group(
                 Route::post('/update','Admin\Product\ProductController@updateLandingPage');
                 Route::post('/destroy','Admin\Product\ProductController@destroyLandingPage');
                 Route::get('/{id}','Admin\Product\ProductController@showLandingPage');
+            });
+
+            Route::group(['prefix' => 'coupon'], function () {
+                Route::get('/all','Admin\Website\CouponController@all');
+                Route::post('/store','Admin\Website\CouponController@store');
+                Route::post('/update','Admin\Website\CouponController@update');
+                Route::post('/destroy','Admin\Website\CouponController@destroy');
+                Route::get('/{id}','Admin\Website\CouponController@show');
             });
 
             Route::group(['prefix' => 'product_stock'], function () {

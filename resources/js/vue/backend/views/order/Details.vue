@@ -84,7 +84,7 @@
                                                 <img style="height: 50px;margin-bottom: 10px;" :src="`${order_detail.product.related_images[0].image_link}`" alt="">
                                                 {{ order_detail.product.product_name }}
                                             </td>
-                                            <td class="center text-uppercase">{{ order_detail.variant.title }}</td>
+                                            <td class="center text-uppercase">{{ order_detail?.variant?.title }}</td>
                                             <td class="right">{{ order_detail.product_price }}</td>
                                             <td class="center">{{ order_detail.qty }}</td>
                                             <td class="right text-end">{{ order_detail.product_price * order_detail.qty }}</td>
@@ -115,7 +115,7 @@
                                                 Discount:
                                             </td>
                                             <td class="text-end">
-                                                <span class="printable_span">{{ this[`get_${store_prefix}`].total_discount }}</span>
+                                                <span class="printable_span">{{ this[`get_${store_prefix}`].coupon_discount }}</span>
                                                 <input type="text" name="total_discount" class="form-control no_print" :value="this[`get_${store_prefix}`].total_discount">
                                                 <!-- {{ this[`get_${store_prefix}`].total_discount }} -->
                                             </td>

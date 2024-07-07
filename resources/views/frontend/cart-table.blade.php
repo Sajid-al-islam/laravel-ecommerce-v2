@@ -39,10 +39,15 @@
 
 <li class="list-group-item d-flex justify-content-between">
     <span>Shipping</span>
-    <strong>ফ্রী ডেলিভারি</strong>
+    <strong>{{ $delivery_cost > 0 ? $delivery_cost . ' ৳' : 'ফ্রী ডেলিভারি' }} </strong>
+</li>
+
+<li class="list-group-item d-flex justify-content-between">
+    <span>Discount</span>
+    <strong id="discount_landing">0 ৳</strong>
 </li>
 
 <li class="list-group-item d-flex justify-content-between">
     <span>Total</span>
-    <strong>{{ $product->sales_price }} ৳</strong>
+    <strong id="total_amount">{{ $product->sales_price + $delivery_cost }} ৳</strong>
 </li>

@@ -38,7 +38,7 @@ class CartController extends Controller
         ]);
     }
 
-    public function add_to_cart($id, $qty, $variant=null)
+    public function add_to_cart($id, $qty, $variant=null, $coupon_amount=0)
     {
 
         foreach ($this->cart as $key => $value) {

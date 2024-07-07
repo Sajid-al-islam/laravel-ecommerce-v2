@@ -48,13 +48,15 @@
                                     />
                                 </div>
 
-                                <div class="form-group d-grid align-content-start gap-1 mb-2 " >
-                                    <input-field
-                                        :label="`middle text`"
-                                        :name="`middle_title`"
-                                        :type="`text`"
-                                        :value="this[`get_${store_prefix}`]['middle_title']"
-                                    />
+                                <div class="form-group d-grid align-content-start full_width gap-1 mb-2 " >
+                                    <label for="description">Middle Section</label>
+                                    <div id="description">
+                                        <editor
+                                            v-model="description_value"
+                                            api-key="d1wxddm2y8oc8aelf9yljfgq4553ntkqd0slwsh4tzyw05cg"
+                                            :init="{height: 200}"
+                                        />
+                                    </div>
                                 </div>
 
                                 <div class="form-group d-grid align-content-start gap-1 mb-2 " >
@@ -221,8 +223,10 @@ import ProductManagementModal from '../product/components/ManagementModal.vue';
 /** store and route prefix for export object use */
 import PageSetup from './PageSetup';
 const {route_prefix, store_prefix} = PageSetup;
+import Editor from '@tinymce/tinymce-vue'
+
 export default {
-    components: { InputField, ProductManagementModal },
+    components: { InputField, ProductManagementModal, Editor },
     data: function(){
         return {
             /** store prefix for JSX */
@@ -247,13 +251,14 @@ export default {
         [`get_${store_prefix}`]: {
             handler: function(v){
                 // this.check_selected_categories();
-                this.faqs = v.landing_faq
+                this.faqs = v.landing_faq;
+                this.description_value = v.middle_title;
             },
             deep: true,
         },
-        // description_value: function(v){
-        //     this[`set_${store_prefix}_description`](v);
-        // },
+        description_value: function(v){
+            this[`set_${store_prefix}_description`](v);
+        },
         // specification_value: function(v){
         //     this[`set_${store_prefix}_specification`](v);
         // },
@@ -269,6 +274,7 @@ export default {
         ]),
         ...mapMutations([
             `set_clear_selected_products`,
+            `set_${store_prefix}_description`,
             `set_${store_prefix}`,
         ]),
         call_store: function(name, params=null){
@@ -286,6 +292,30 @@ export default {
         removeFaq(index) {
             this.faqs.splice(index, 1)
         },
+        initCKEditor: function(){
+            let that = this;
+
+            setTimeout(async function() {
+                let description = window.editor = await CKEDITOR.ClassicEditor
+                    .create( document.querySelector( '#description' ), window.ck_editor_config)
+                    .catch( error => {
+                        console.error( error );
+                    } );
+
+                let specification = await CKEDITOR.ClassicEditor
+                    .create( document.querySelector( '#specification' ), window.ck_editor_config )
+                    .catch( error => {
+                        console.error( error );
+                    } );
+
+                description.model.document.on('change', function(){
+                    that[`set_${store_prefix}_description`](description.data.get());
+                });
+                specification.model.document.on('change', function(){
+                    that[`set_${store_prefix}_specification`](specification.data.get());
+                });
+            }, 300);
+        }
     },
     computed: {
         ...mapGetters({

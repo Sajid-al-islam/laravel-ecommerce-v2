@@ -1,9 +1,11 @@
 <?php
 
 use App\Http\Controllers\Auth\ApiLoginController;
+use App\Http\Controllers\CartController;
 use App\Http\Livewire\Login;
 use App\Http\Livewire\Register;
 use App\Http\Livewire\ShowPosts;
+use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Http;
@@ -127,7 +129,8 @@ Route::prefix('')->namespace('Controllers')->group(function () {
 
     Route::get('/get-category-product/{category_id}/{chunk_size}/{chunk_no}/json', 'JsonController@get_category_product')->name('get_category_product_json');
     Route::post('/search-product/json', 'JsonController@search_product')->name('search_product_json');
-    Route::get('/update-cart-html/{product_id}', 'JsonController@update_cart_html')->name('update_cart_html');
+    Route::post('/update-cart-html', 'JsonController@update_cart_html')->name('update_cart_html');
+    Route::post('/apply-coupon', 'JsonController@applyCoupon')->name('apply_coupon');
 
     Route::get('/cart', 'CartController@cart');
 
@@ -325,4 +328,13 @@ Route::get('/admin', function () {
 
 Route::get('/cat', function () {
     return response()->json(\App\Models\Category::select(['id', 'name', 'parent_id'])->get());
+});
+
+Route::get('/cart-test', function () {
+    ddd((new CartController())->get());
+});
+
+Route::get('/optimize_app', function () {
+    $call = Artisan::call('optimize:clear');
+    dd($call);
 });

@@ -244,28 +244,23 @@
 
                                     </div>
                                 </div>
-                                <div class="col-md-12 col-sm-12 d-none">
+                                <div class="col-md-12 col-sm-12">
                                     <div class="checkout-section card checkout-box voucher-coupon mt-3 p-1">
                                         <div class="card-body">
                                             <div class="row">
-                                                <div class="col-md-6 col-sm-12" id="gift-voucher">
+                                                <div class="col-md-12 col-sm-12" id="discount-coupon">
                                                     <div class="input-group">
-                                                        <input type="text" name="voucher" placeholder="Gift Voucher"
-                                                            id="input-voucher" class="form-control" />
-                                                        <span class="input-group-btn"><button type="button"
-                                                                id="button-voucher" data-loading-text="Loading..."
-                                                                class="btn st-outline">Apply Voucher</button></span>
-                                                    </div>
-                                                </div>
-                                                <div class="col-md-6 col-sm-12" id="discount-coupon">
-                                                    <div class="input-group">
-                                                        <input type="text" name="coupon"
+                                                        <input type="text"
                                                             placeholder="Promo / Coupon Code" id="input-coupon"
+                                                            name="coupon"
                                                             class="form-control" />
+                                                        <input type="hidden" name="coupon_discount" id="coupon_discount" value="0">
+                                                        <input type="hidden" name="coupon_applied" id="coupon_applied" value="no">
                                                         <span class="input-group-btn"><button type="button"
-                                                                id="button-coupon" data-loading-text="Loading..."
+                                                                id="button-coupon"
                                                                 class="btn st-outline">Apply Coupon</button></span>
                                                     </div>
+                                                    <div id="coupon-message" style="display: none;"></div>
                                                 </div>
                                             </div>
                                         </div>
@@ -359,32 +354,29 @@
                                                     </tr>
                                                     {{-- @dump($setting) --}}
                                                     @php
-                                                        $check_offer = $setting->discount_on_greater_amount > 0 && $cart_total >= $setting->discount_on_greater_amount;
-                                                        $discount = floor(($cart_total + $shipping_method) * $setting->discount_on_greater_tk / 100 );
+                                                        // $check_offer = $setting->discount_on_greater_amount > 0 && $cart_total >= $setting->discount_on_greater_amount;
+                                                        // $discount = floor(($cart_total + $shipping_method) * $setting->discount_on_greater_tk / 100 );
+                                                        $discount = 0;
                                                     @endphp
-                                                    @if ($check_offer)
+                                                    {{-- @if ($check_offer) --}}
                                                         <tr class="total">
                                                             <td colspan="2  " class="text-end">
-                                                                <strong>Discount: {{ $setting->discount_on_greater_title }}</strong>
+                                                                <strong>Discount: </strong>
                                                             </td>
                                                             <td class="text-end">
                                                                 <span class="amount">
-                                                                    <span id="shipping_cost"> - {{ $discount }}</span>৳
+                                                                    <span id="coupon_discount_amount"> - {{ $discount }}</span>৳
                                                                 </span>
                                                             </td>
                                                         </tr>
-                                                    @endif
+                                                    {{-- @endif --}}
 
                                                     <tr class="total">
                                                         <td colspan="2" class="text-end"><strong>Total:</strong></td>
                                                         <input type="hidden" name="order_total" value="{{ $cart_total }}" id="order_total">
                                                         <td class="text-end">
                                                             <span class="amount" id="total_cost">
-                                                                @if ($check_offer)
-                                                                    {{ $cart_total + $shipping_method - $discount  }}
-                                                                @else
                                                                     {{ $cart_total + $shipping_method  }}
-                                                                @endif
                                                             </span>৳
                                                         </td>
                                                     </tr>
@@ -430,5 +422,55 @@
                 </script>
             </div>
         </div>
+        <script>
+            $('#button-coupon').click(function(e) {
+                e.preventDefault();
+
+                var couponCode = $('input[name="coupon"]').val();
+
+                $('#input-coupon').val(couponCode);
+                var total_amount = {{ $cart_total + $shipping_method }};
+
+                $.ajax({
+                    url: '/apply-coupon',
+                    type: 'POST',
+                    data: {
+                        coupon_code: couponCode,
+                        _token: '{{ csrf_token() }}'
+                    },
+                    success: function(data) {
+                        var messageDiv = $('#coupon-message');
+                        if (data.discount) {
+                            messageDiv.text('Coupon applied successfully! Discount: ' + data.discount);
+                            messageDiv.css('color', 'green');
+                            let html = `${data.discount} ৳`
+                            $('#discount_landing').html(html)
+                            $('#coupon_discount').val(data.discount);
+                            $('#coupon_applied').val('yes');
+                            $('#coupon_discount_amount').html(data.discount);
+                            let discounted = total_amount - data.discount;
+                            $('#total_cost').html(discounted);
+
+                        }
+                        messageDiv.show();
+                    },
+                    error: function(xhr, status, error) {
+                        var messageDiv = $('#coupon-message');
+                        var response = xhr.responseJSON;
+                        if (response && response.message) {
+                            messageDiv.text(response.message);
+                        } else {
+                            messageDiv.text('An error occurred while applying the coupon. Please try again.');
+                        }
+                        messageDiv.css('color', 'red');
+                        messageDiv.show();
+                        console.error('Error:', error);
+                        $('#input-coupon').val('');
+                        $('#coupon_discount').val(0);
+                        $('#coupon_applied').val('no');
+                    }
+                });
+            });
+        </script>
     </main>
 @endsection
