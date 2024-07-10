@@ -14,4 +14,30 @@
             </h2>
         </div>
     </div>
+    <script>
+        !function(f,b,e,v,n,t,s)
+        {if(f.fbq)return;n=f.fbq=function(){n.callMethod?
+        n.callMethod.apply(n,arguments):n.queue.push(arguments)};
+        if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version='2.0';
+        n.queue=[];t=b.createElement(e);t.async=!0;
+        t.src=v;s=b.getElementsByTagName(e)[0];
+        s.parentNode.insertBefore(t,s)}(window, document,'script',
+        'https://connect.facebook.net/en_US/fbevents.js');
+        fbq('init', '1062700004978868');
+        fbq('track', 'PageView');
+    </script>
+    <script>
+        document.addEventListener("DOMContentLoaded", function(){
+
+            var total_amount = {!! $total_amount !!};
+            var product_skus = @json($product_ids);
+            // console.log(product_skus, total_amount);
+            fbq('track', 'Purchase',{
+                value: total_amount,
+                currency: 'BDT',
+                content_ids: product_skus,
+                content_type: 'product'
+            });
+        });
+    </script>
 @endsection

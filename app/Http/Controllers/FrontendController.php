@@ -205,6 +205,7 @@ class FrontendController extends Controller
         $order_delivery->save();
 
         $cart_products = $carts->get();
+        $product_ids = [];
         foreach ($cart_products as $key => $product) {
             $order_details = new OrderDetails();
             $order_details->order_id = $order->id;
@@ -212,6 +213,9 @@ class FrontendController extends Controller
                 $order_details->user_id = Auth::user()->id;
             }
             $order_details->product_id = $product['product']->id;
+
+            array_push($product_ids, $product['product']->id);
+
             if (is_numeric($product['product']->sales_price)) {
                 $order_details->product_price = $product['product']->sales_price;
             } else {
@@ -264,7 +268,9 @@ class FrontendController extends Controller
             //throw $th;
         }
         if($request->source == 'landing') {
-            return view('frontend.thank-you');
+            $total_amount = $order->total_price;
+            $product_ids = $product_ids;
+            return view('frontend.thank-you', compact('total_amount', 'product_ids'));
         }
         return response()->json([
             "message" => "Order completed without courier",

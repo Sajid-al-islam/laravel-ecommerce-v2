@@ -4,6 +4,19 @@
     ],
 ])
 
+<script>
+    !function(f,b,e,v,n,t,s)
+    {if(f.fbq)return;n=f.fbq=function(){n.callMethod?
+    n.callMethod.apply(n,arguments):n.queue.push(arguments)};
+    if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version='2.0';
+    n.queue=[];t=b.createElement(e);t.async=!0;
+    t.src=v;s=b.getElementsByTagName(e)[0];
+    s.parentNode.insertBefore(t,s)}(window, document,'script',
+    'https://connect.facebook.net/en_US/fbevents.js');
+    fbq('init', '846010664062728');
+    fbq('track', 'PageView');
+</script>
+
 @section('content')
     <main class="main-content">
         <header class="masthead">
@@ -324,10 +337,44 @@
             </div>
         </section>
     </main>
+    @php
+        $landingProduct = $landing_page->landingProducts[0]?->product;
+    @endphp
     <script>
         $(document).ready(function() {
-            var landingProductId = {{ $landing_page->landingProducts[0]->product->id }};
+
+            var landingProductId = {{ $landingProduct->id }};
             var delivery_cost = {{ $landing_page->delivery_cost }}; // Convert PHP object to JSON
+            var total_amount = {{ $landingProduct->sales_price + $landing_page->delivery_cost }}
+            console.log(landingProductId, delivery_cost, total_amount);
+            fbq('track', 'ViewContent', {
+                "content_ids": [landingProductId],
+                "currency": "BDT",
+                "value": {{ $landingProduct->sales_price }},
+                "content_type": "product",
+                "contents": "[{{ $landingProduct->product_name }}]"
+            });
+            fbq('track', 'AddToCart', {
+                "content_ids": [landingProductId],
+                "content_type": "product",
+                "plugin": "Checkout",
+                "value": {{ $landingProduct->sales_price }},
+                "content_name": "[{{ $landingProduct->product_name }}]",
+                "contents": "[{{ $landingProduct->product_name }}]",
+                "currency": "BDT",
+                "user_roles": ""
+            });
+            fbq('track', 'InitiateCheckout', {
+                "content_ids": [landingProductId],
+                "content_type": "product",
+                "value": total_amount,
+                "content_name": "[{{ $landingProduct->product_name }}]",
+                "contents": "[{{ $landingProduct->product_name }}]",
+                "currency": "BDT",
+                "user_roles": "",
+                "domain": "https:\/\/premiumfruitsshop.com",
+                "language": "en-US"
+            });
 
             updateCart(landingProductId, delivery_cost);
 
