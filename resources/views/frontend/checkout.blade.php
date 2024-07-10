@@ -275,31 +275,11 @@
                                             {{-- @dump($carts) --}}
                                             {{-- @dump($carts[0]['product']->categories()->select('name')->first()->name) --}}
                                             @php
-                                                $products_ids = '';
+                                                $products_ids = [];
                                             @endphp
                                             <script>
                                                 function fb_purchase() {
-                                                    // fbq('track', 'Purchase', {
-                                                    //     id: "1062700004978868",
-                                                    //     contents: [
-                                                    //         @foreach ($carts as $cart)
-                                                    //             @php
-                                                    //                 $products_ids .= $cart['product']->id . ',';
-                                                    //             @endphp {
-                                                    //                 id: '{{ $cart['product']->id }}',
-                                                    //                 quantity: {{ $cart['qty'] }},
-                                                    //                 name: '{{ $cart['product']->product_name }}',
-                                                    //                 product_catalog_id: '1062700004978868',
-                                                    //                 category: "{{ $cart['product']->categories()->select('name')->first()->name ?? 't-shirt' }}",
-                                                    //                 currency: 'BDT',
-                                                    //                 value: '{{ $cart['product']->sales_price }}',
-                                                    //             },
-                                                    //         @endforeach
-                                                    //     ],
-                                                    //     content_ids: [{{ $products_ids }}],
-                                                    //     content_type: 'product',
-                                                    //     currency: 'BDT',
-                                                    // })
+
                                                 }
                                             </script>
                                             <table class="table table-bordered bg-white checkout-data">
@@ -315,6 +295,9 @@
 
                                                     @if ($carts)
                                                         @foreach ($carts as $cart)
+                                                            @php
+                                                                array_push($products_ids, $cart['product']->id);
+                                                            @endphp
                                                             <tr>
                                                                 <td class="name">
                                                                     <a
@@ -423,6 +406,16 @@
             </div>
         </div>
         <script>
+            window.products_ids = @json($products_ids);
+            let fbTotalPrice = {{ $cart_total + $shipping_method }};
+            // console.log(products_ids, total);
+            fbq('track', 'InitiateCheckout',{
+                value: fbTotalPrice,
+                currency: 'BDT',
+                content_ids: products_ids,
+                content_type: 'product'
+            });
+
             $('#button-coupon').click(function(e) {
                 e.preventDefault();
 

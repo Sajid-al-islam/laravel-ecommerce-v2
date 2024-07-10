@@ -84,4 +84,18 @@
             </div>
         </div>
     </div>
+    <script>
+        document.addEventListener("DOMContentLoaded", function(){
+
+            var total_amount = {!! $total_amount !!};
+            var product_skus = @json($skus);
+            console.log(product_skus, total_amount);
+            fbq('track', 'Purchase',{
+                value: total_amount,
+                currency: 'BDT',
+                content_ids: product_skus,
+                content_type: 'product'
+            });
+        });
+    </script>
 </div>

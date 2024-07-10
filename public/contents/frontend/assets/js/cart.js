@@ -72,12 +72,15 @@ function removeCart(product_id) {
 }
 
 async function buy_now(product_id, qty) {
-    // if (!selected_size) {
-    //     window.s_alert("warning", "no size is selected");
-    //     return 0;
-    // }
+    if (!selected_size) {
+        window.s_alert("warning", "no size is selected");
+        return 0;
+    }
     await addToCart(product_id, qty, false);
-    location.href = "/checkout";
+    setTimeout(() => {
+        location.href = "/checkout";
+    }, 1000);
+
 }
 
 function convertDigitsToBengali(number) {
@@ -158,10 +161,9 @@ async function checkout(event) {
             error_response(res.data)
         }
         if (res.status === 200) {
-            if(fb_purchase && typeof fb_purchase == 'function'){
-                fb_purchase();
-            }
             location.href = "/order-complete/" + res.data.order.id;
+        }else {
+            window.s_alert("error", "Something went wrong");
         }
     })
 }

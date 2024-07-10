@@ -9,24 +9,27 @@
     <!-- Favicon -->
     <link rel="shortcut icon" type="image/x-icon" href="/{{ $setting->fabicon }}">
     <meta name="turbolinks-cache-control" content="no-cache">
-    @include('frontend.include.meta',[
-        'meta' => $meta??[]
+    @include('frontend.include.meta', [
+        'meta' => $meta ?? [],
     ])
 
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@300;400;500;600;700&display=swap"
+        rel="stylesheet">
     <!-- Font CSS -->
     <link rel="preconnect" href="https://fonts.googleapis.com/">
     <link rel="preconnect" href="https://fonts.gstatic.com/" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,400;0,500;0,600;0,700;1,400&amp;family=Work+Sans:ital,wght@0,400;0,500;0,600;0,700;1,400&amp;display=swap"
+    <link
+        href="https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,400;0,500;0,600;0,700;1,400&amp;family=Work+Sans:ital,wght@0,400;0,500;0,600;0,700;1,400&amp;display=swap"
         rel="stylesheet">
 
     <!-- Vendor CSS (Bootstrap & Icon Font) -->
     <link rel="stylesheet" href="{{ asset('contents/frontend') }}/assets/css/vendor/bootstrap.min.css">
 
     <link rel="stylesheet" href="{{ asset('contents/frontend') }}/assets/js/owlcarousel/assets/owl.carousel.min.css">
-    <link rel="stylesheet" href="{{ asset('contents/frontend') }}/assets/js/owlcarousel/assets/owl.theme.default.min.css">
+    <link rel="stylesheet"
+        href="{{ asset('contents/frontend') }}/assets/js/owlcarousel/assets/owl.theme.default.min.css">
     <link rel="stylesheet" href="{{ asset('contents/frontend') }}/assets/css/plugins/font-awesome.min.css">
     <link rel="stylesheet" href="{{ asset('contents/frontend') }}/assets/css/plugins/simple-line-icons.css">
 
@@ -53,40 +56,41 @@
 
     @include('frontend.layouts.website_style')
 
-    <!-- Google Tag Manager -->
-    <script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
+
+    {{-- <script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
     new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
     j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
     'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
-    })(window,document,'script','dataLayer','GTM-TX7BSJHT');</script>
-    <!-- End Google Tag Manager -->
+    })(window,document,'script','dataLayer','GTM-TX7BSJHT');</script> --}}
+
 
     <script>
-    !function(f,b,e,v,n,t,s)
-    {if(f.fbq)return;n=f.fbq=function(){n.callMethod?
-    n.callMethod.apply(n,arguments):n.queue.push(arguments)};
-    if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version='2.0';
-    n.queue=[];t=b.createElement(e);t.async=!0;
-    t.src=v;s=b.getElementsByTagName(e)[0];
-    s.parentNode.insertBefore(t,s)}(window, document,'script',
-    'https://connect.facebook.net/en_US/fbevents.js');
-    fbq('init', '1062700004978868');
-    fbq('track', 'PageView');
+        !function(f,b,e,v,n,t,s)
+        {if(f.fbq)return;n=f.fbq=function(){n.callMethod?
+        n.callMethod.apply(n,arguments):n.queue.push(arguments)};
+        if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version='2.0';
+        n.queue=[];t=b.createElement(e);t.async=!0;
+        t.src=v;s=b.getElementsByTagName(e)[0];
+        s.parentNode.insertBefore(t,s)}(window, document,'script',
+        'https://connect.facebook.net/en_US/fbevents.js');
+        fbq('init', '846010664062728');
+        fbq('track', 'PageView');
     </script>
-    <noscript><img height="1" width="1" style="display:none"
-    src="https://www.facebook.com/tr?id=1062700004978868&ev=PageView&noscript=1"
-    /></noscript>
+    <noscript>
+        <img height="1" width="1" style="display:none"
+            src="https://www.facebook.com/tr?id=846010664062728&ev=PageView&noscript=1" />
+    </noscript>
 </head>
 
 <body class="wrapper home-five-wrapper">
     <!-- Google Tag Manager (noscript) -->
-    <noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-TX7BSJHT"
-    height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
+    {{-- <noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-TX7BSJHT" height="0" width="0"
+            style="display:none;visibility:hidden"></iframe></noscript> --}}
     <!-- End Google Tag Manager (noscript) -->
 
     @include('frontend.layouts.header')
 
-    @if($setting->breaking_news)
+    @if ($setting->breaking_news)
         <style>
             .latest_news .marquee_body marquee {
                 font-size: 15px;
@@ -115,32 +119,34 @@
                     <div class="col-md-6 col-lg-3 mb-6">
                         <div class="widget-item">
                             <a class="widget-logo" href="/">
-                                <img src="/{{$setting->footer_logo}}" alt="Logo" width="182" height="31">
+                                <img src="/{{ $setting->footer_logo }}" alt="Logo" width="182" height="31">
                             </a>
                             <div class="widget-contact widget-contact-two">
                                 <p class="widget-contact-desc me-n1">
                                     {{ $setting->footer_short_description }}
                                     @for ($i = 1; $i <= 3; $i++)
                                         @php
-                                            $key = "email_".$i;
+                                            $key = 'email_' . $i;
                                         @endphp
                                         @if ($setting->$key)
-                                            <a href="mailto://{{$setting->$key}}">{{$setting->$key}}</a>
+                                            <a href="mailto://{{ $setting->$key }}">{{ $setting->$key }}</a>
                                         @endif
                                     @endfor
                                 </p>
                                 <div class="widget-info-item mb-6">
-                                    <img src="{{ asset('contents/frontend') }}/assets/images/icons/pin.png" alt="Icon">
+                                    <img src="{{ asset('contents/frontend') }}/assets/images/icons/pin.png"
+                                        alt="Icon">
                                     <p>
                                         {{ $setting->address }}
                                     </p>
                                 </div>
                                 <div class="widget-info-item">
-                                    <img src="{{ asset('contents/frontend') }}/assets/images/icons/mobile.png" alt="Icon">
+                                    <img src="{{ asset('contents/frontend') }}/assets/images/icons/mobile.png"
+                                        alt="Icon">
                                     <div class="info-item-call">
                                         @for ($i = 1; $i <= 3; $i++)
                                             @php
-                                                $key = "phone_number_".$i;
+                                                $key = 'phone_number_' . $i;
                                             @endphp
                                             @if ($setting->$key)
                                                 <a href="tel://{{ $setting->$key }}">
@@ -229,26 +235,27 @@
     </div>
 
     <script>
-    //   var chatbox = document.getElementById('fb-customer-chat');
-    //   chatbox.setAttribute("page_id", "108007495562741");
-    //   chatbox.setAttribute("attribution", "biz_inbox");
-    // </script>
+        //   var chatbox = document.getElementById('fb-customer-chat');
+        //   chatbox.setAttribute("page_id", "108007495562741");
+        //   chatbox.setAttribute("attribution", "biz_inbox");
+        //
+    </script>
 
     <script>
-    //   window.fbAsyncInit = function() {
-    //     FB.init({
-    //       xfbml            : true,
-    //       version          : 'v18.0'
-    //     });
-    //   };
+        //   window.fbAsyncInit = function() {
+        //     FB.init({
+        //       xfbml            : true,
+        //       version          : 'v18.0'
+        //     });
+        //   };
 
-    //   (function(d, s, id) {
-    //     var js, fjs = d.getElementsByTagName(s)[0];
-    //     if (d.getElementById(id)) return;
-    //     js = d.createElement(s); js.id = id;
-    //     js.src = 'https://connect.facebook.net/en_US/sdk/xfbml.customerchat.js';
-    //     fjs.parentNode.insertBefore(js, fjs);
-    //   }(document, 'script', 'facebook-jssdk'));
+        //   (function(d, s, id) {
+        //     var js, fjs = d.getElementsByTagName(s)[0];
+        //     if (d.getElementById(id)) return;
+        //     js = d.createElement(s); js.id = id;
+        //     js.src = 'https://connect.facebook.net/en_US/sdk/xfbml.customerchat.js';
+        //     fjs.parentNode.insertBefore(js, fjs);
+        //   }(document, 'script', 'facebook-jssdk'));
     </script>
 
 </body>

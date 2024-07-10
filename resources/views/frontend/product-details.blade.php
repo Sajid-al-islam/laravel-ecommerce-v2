@@ -53,73 +53,8 @@
                         </li>
                     </ul>
                 </div>
-                   <script>
-                        // fbq('track', 'AddToCart', {currency: "BDT", value: {{$product->sales_price}}});
-                        function fb_purchase(){
-                            if(typeof fbq != 'function') return;
-                            // fbq('track', 'Purchase', {
-                            //     id:"1062700004978868",
-                            //     contents: [
-                            //         {
-                            //             id: '{{$product->id}}',
-                            //             quantity: 1 ,
-                            //             name: '{{Str::slug($product->product_name)}}',
-                            //             product_catalog_id: '704397884547431',
-                            //             category: "{{$category_names}}",
-                            //             currency: 'BDT',
-                            //             value: '{{$product->sales_price}}',
-                            //         }
-                            //     ],
-                            //     content_ids: ['{{$product->id}}'],
-                            //     content_type: 'product',
-                            //     value: '{{$product->sales_price}}',
-                            //     currency: 'BDT',
-                            // })
-                        }
-                        function fb_add_to_cart(){
-                            if(typeof fbq != 'function') return;
-                            // fbq('track', 'AddToCart', {
-                            //     id:"1062700004978868",
-                            //     contents: [
-                            //         {
-                            //             id: '{{$product->id}}',
-                            //             quantity: 1 ,
-                            //             name: '{{Str::slug($product->product_name)}}',
-                            //             product_catalog_id: '704397884547431',
-                            //             category: "{{$category_names}}",
-                            //             currency: 'BDT',
-                            //             value: '{{$product->sales_price}}',
-                            //         }
-                            //     ],
-                            //     content_ids: ['{{$product->id}}'],
-                            //     content_type: 'product',
-                            //     value: '{{$product->sales_price}}',
-                            //     currency: 'BDT',
-                            // })
-                        }
 
-                        if(typeof fbq == 'function'){
-                            // fbq('track', 'ViewContent', {
-                            //     id:"1062700004978868",
-                            //     contents: [
-                            //         {
-                            //             id: '{{$product->id}}',
-                            //             quantity: 1 ,
-                            //             name: '{{Str::slug($product->product_name)}}',
-                            //             product_catalog_id: '704397884547431',
-                            //             category: "{{$category_names}}",
-                            //             currency: 'BDT',
-                            //             value: '{{$product->sales_price}}',
-                            //         }
-                            //     ],
-                            //     content_ids: ['{{$product->id}}'],
-                            //     content_type: 'product',
-                            //     value: '{{$product->sales_price}}',
-                            //     currency: 'BDT',
-                            // })
-                        }
-                    </script>
-                    <div itemscope itemtype="{{url('')}}/product">
+                    {{-- <div itemscope itemtype="{{url('')}}/product">
                         <meta itemprop="brand" content="dibyo-bd">
                         <meta itemprop="name" content="{{$product->product_name}}">
                         <meta itemprop="description" content="{{$product->product_name}}">
@@ -136,7 +71,7 @@
                             <meta itemprop="price" content="{{$product->sales_price}}">
                             <meta itemprop="priceCurrency" content="BDT">
                         </div>
-                    </div>
+                    </div> --}}
                  <!--<img src="https://www.facebook.com/tr?id=964585464637191&amp;ev=ViewContent&amp;cd[content_name]={{Str::slug($product->product_name)}}&amp;cd[content_category]={{$category_names}}&amp;cd[content_type]=product&amp;cd[content_ids]={{$product->id}}&amp;cd[product_catalog_id]=704397884547431&amp;cd[value]={{$product->sales_price}}&amp;cd[currency]=BDT&amp;noscript=1" height="1" width="1" style="display:none"/>-->
 
                 <div class="col-md-5">
@@ -466,6 +401,51 @@
                 <div class="col-md-3"></div>
             </div>
         </div>
+
+        <script>
+            // fbq('track', 'AddToCart', {currency: "BDT", value: {{$product->sales_price}}});
+            function fb_add_to_cart(){
+                if(typeof fbq != 'function') return;
+
+                fbq('track', 'AddToCart', {
+                    id:"846010664062728",
+                    contents: [
+                        {
+                            id: '{{$product->id}}',
+                            quantity: 1 ,
+                            name: '{{ $product->product_name }}',
+                            category: "{{$category_names}}",
+                            currency: 'BDT',
+                            value: '{{$product->sales_price}}',
+                        }
+                    ],
+                    content_ids: ['{{$product->id}}'],
+                    content_type: 'product',
+                    value: '{{$product->sales_price}}',
+                    currency: 'BDT',
+                })
+            }
+
+            if(typeof fbq == 'function'){
+                fbq('track', 'ViewContent', {
+                    id:"846010664062728",
+                    contents: [
+                        {
+                            id: '{{$product->id}}',
+                            quantity: 1 ,
+                            name: '{{ $product->product_name }}',
+                            category: "{{$category_names}}",
+                            currency: 'BDT',
+                            value: '{{$product->sales_price}}',
+                        }
+                    ],
+                    content_ids: ['{{$product->id}}'],
+                    content_type: 'product',
+                    value: '{{$product->sales_price}}',
+                    currency: 'BDT',
+                })
+            }
+        </script>
 
         <script>
             var elements = document.getElementsByClassName("review_star");
