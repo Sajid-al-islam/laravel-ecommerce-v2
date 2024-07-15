@@ -49,7 +49,7 @@ Route::group(['prefix' => '', 'namespace' => "Livewire"], function () {
         Route::get('/reset-password', "ResetPassword")->name('frontend.reset_password');
         Route::get('/invoice/{id}', "Invoice")->name('frontend.invoice');
     });
-    Route::get('/order-complete/{id}', "OrderComplete");
+    Route::get('/order-complete/{id}', "OrderComplete")->name('order_complete');
     // Route::get('/product/{id}/{product_name}', ProductDetails::class)->name('product_details');
     // Route::get('/category/{id}/{category_name}', CategoryProduct::class)->name('category_product');
     // Route::get('/product/search/{search}', SearchProduct::class)->name('search_product');

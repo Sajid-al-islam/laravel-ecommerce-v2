@@ -270,7 +270,8 @@ class FrontendController extends Controller
         if($request->source == 'landing') {
             $total_amount = $order->total_price;
             $product_ids = $product_ids;
-            return view('frontend.thank-you', compact('total_amount', 'product_ids'));
+            return redirect()->route('order_complete', $order->id);
+            // return view('frontend.thank-you', compact('total_amount', 'product_ids'));
         }
         return response()->json([
             "message" => "Order completed without courier",

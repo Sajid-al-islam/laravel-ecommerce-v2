@@ -25,19 +25,15 @@
         'https://connect.facebook.net/en_US/fbevents.js');
         fbq('init', '1062700004978868');
         fbq('track', 'PageView');
-    </script>
-    <script>
-        document.addEventListener("DOMContentLoaded", function(){
-
-            var total_amount = {!! $total_amount !!};
-            var product_skus = @json($product_ids);
-            // console.log(product_skus, total_amount);
-            fbq('track', 'Purchase',{
-                value: total_amount,
-                currency: 'BDT',
-                content_ids: product_skus,
-                content_type: 'product'
-            });
+        var total_amount = {!! $total_amount !!};
+        var product_skus = @json($product_ids);
+        console.log(product_skus, total_amount);
+        fbq('track', 'Purchase',{
+            value: total_amount,
+            currency: 'BDT',
+            content_ids: product_skus,
+            content_type: 'product'
         });
+        console.log('after api call',product_skus, total_amount);
     </script>
 @endsection
