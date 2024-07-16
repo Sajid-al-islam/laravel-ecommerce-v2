@@ -89,6 +89,7 @@
             </div>
         </div>
     </div>
+    @push('custom_js')
     <script>
         window.addEventListener("load", (event) => {
             var total_amount = {!! $total_amount !!};
@@ -102,4 +103,5 @@
             });
         });
     </script>
+    @endpush
 </div>
