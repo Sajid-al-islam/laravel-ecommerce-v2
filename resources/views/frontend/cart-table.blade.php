@@ -39,7 +39,7 @@
 
 <li class="list-group-item d-flex justify-content-between">
     <span>Shipping</span>
-    <strong>{{ $delivery_cost > 0 ? $delivery_cost . ' ৳' : 'ফ্রী ডেলিভারি' }} </strong>
+    <strong id="shipping_cost">{{ $delivery_cost > 0 ? $delivery_cost . ' ৳' : 'ফ্রী ডেলিভারি' }}</strong>
 </li>
 
 <li class="list-group-item d-flex justify-content-between">

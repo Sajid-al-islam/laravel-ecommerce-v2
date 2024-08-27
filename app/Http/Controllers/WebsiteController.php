@@ -5,7 +5,9 @@ namespace App\Http\Controllers;
 use App\Models\Category;
 use App\Models\LandingPage;
 use App\Models\Order;
+use App\Models\OrderDetails;
 use App\Models\Product;
+use App\Models\Setting;
 use Illuminate\Http\Request;
 
 class WebsiteController extends Controller
@@ -58,10 +60,11 @@ class WebsiteController extends Controller
             $q->with('product');
         }, 'landingFaq'])->first();
         $products = Product::where('is_hair', 1)->get();
+        $setting = Setting::select('home_delivery_cost', 'outside_dhaka_cost', 'sub_area_delivery_cost')->first();
         if(empty($landing_page)) {
             abort(404, 'No funnel found');
         }
-        return view('frontend.landing_page', compact('landing_page', 'products'));
+        return view('frontend.landing_page', compact('landing_page', 'products', 'setting'));
     }
 
     public function invoice_download($invoice)
@@ -130,6 +133,16 @@ class WebsiteController extends Controller
     {
         $product = Product::find($id);
         return view('livewire.quick-view-product', compact('product'))->render();
+    }
+
+    public function order_complete($id) {
+        $order = Order::where('id', $id)->with(['order_address', 'order_details'])->first();
+        if(isset($order) && !empty($order)){
+            $total_amount = $order->total_price;
+        }
+
+        $skus = OrderDetails::where('order_id', $id)->get()->pluck('product_id');
+        return view('frontend.order-complete', compact('order', 'skus', 'total_amount'));
     }
 
     public function cart_all()

@@ -17,6 +17,13 @@
     fbq('track', 'PageView');
 </script>
 
+@php
+    $landingProduct = $landing_page->landingProducts[0]?->product;
+@endphp
+<script>
+    var landingProductId = {{ $landingProduct->id }};
+</script>
+
 @section('content')
     <main class="main-content">
         <header class="masthead">
@@ -180,7 +187,6 @@
                     <div class="col-12">
                         <div class="container">
                             <main id="billing">
-
                                 <form action="{{ route('frontend_checkout') }}" method="POST">
                                     @csrf
                                     <div class="row g-5" style="font-family: 'Hind Siliguri';">
@@ -188,6 +194,7 @@
                                             <h4 class="d-flex justify-content-between align-items-center mb-3">
                                                 <span>Your order</span>
                                             </h4>
+
                                             <ul class="list-group mb-3" id="cart_section">
 
                                             </ul>
@@ -280,6 +287,36 @@
                                                     </div>
                                                 </div>
 
+                                                <div class="">
+                                                    <p>ডেলিভারি অপশন সিলেক্ট করুন</p>
+                                                    <label class="radio-inline">
+                                                        <input class="delivery_cost" id="home_delivery" type="radio" checked
+                                                            onchange="shipping_cost.innerHTML=`{{ $setting->home_delivery_cost }} ৳`;"
+                                                            name="shipping_method" value="{{ $setting->home_delivery_cost }}" />
+                                                        Inside Dhaka - {{ $setting->home_delivery_cost }} ৳
+                                                    </label>
+                                                    <br />
+                                                    {{-- <br />
+                                                <label class="radio-inline">
+                                                    <input type="radio" onchange="shipping_cost.innerHTML=0; total_cost.innerHTML=`{{$cart_total}}`;" checked name="shipping_method" value="pickup" />
+                                                    Store Pickup - 0 ৳
+                                                </label> --}}
+                                                    <label class="radio-inline">
+                                                        <input class="delivery_cost" id="outside_dhaka" type="radio"
+                                                            onchange="shipping_cost.innerHTML=`{{ $setting->sub_area_delivery_cost }} ৳`;"
+                                                            name="shipping_method" value="{{ $setting->sub_area_delivery_cost }}" />
+                                                        Dhaka Sub area (Gazipur, Naraynganj) - {{ $setting->sub_area_delivery_cost }} ৳
+                                                    </label>
+                                                    <br />
+                                                    <label class="radio-inline">
+                                                        <input class="delivery_cost" id="outside_dhaka" type="radio"
+                                                            onchange="shipping_cost.innerHTML=`{{ $setting->outside_dhaka_cost }} ৳`;"
+                                                            name="shipping_method" value="{{ $setting->outside_dhaka_cost }}" />
+                                                        Outside Dhaka - {{ $setting->outside_dhaka_cost }} ৳
+                                                    </label>
+                                                    <br />
+                                                </div>
+
                                                 <hr class="my-4" />
 
                                                 <h4 class="mb-3">প্রোডাক্ট সিলেক্ট করুন</h4>
@@ -293,7 +330,7 @@
                                                         <div class="form-check pt-4">
                                                             <input class="form-check-input" type="radio"
                                                                 name="product_id"
-                                                                onchange="updateCart({{ $product->id }})"
+                                                                onchange="landingProductId = {{ $product->id }}; updateCart({{ $product->id }});"
                                                                 id="product_id_{{ $key }}"
                                                                 value="{{ $product->id }}"
                                                                 {{ $key < 1 ? 'checked' : '' }}>
@@ -337,14 +374,18 @@
             </div>
         </section>
     </main>
-    @php
-        $landingProduct = $landing_page->landingProducts[0]?->product;
-    @endphp
     <script>
         $(document).ready(function() {
+            var delivery_cost = parseFloat($('input[name="shipping_method"]:checked').val());
+            $('input[name="shipping_method"]').change(function () {
+                // Get the selected shipping method value (assume it's the delivery cost)
+                var delivery_cost = parseFloat($('input[name="shipping_method"]:checked').val());
+                console.log(delivery_cost);
 
-            var landingProductId = {{ $landingProduct->id }};
-            var delivery_cost = {{ $landing_page->delivery_cost }}; // Convert PHP object to JSON
+                // Update the cart with the new delivery cost
+                updateCart(landingProductId, delivery_cost);
+            });
+            // var delivery_cost = document.getElementByClassName("delivery_cost").value; // Convert PHP object to JSON
             var total_amount = {{ $landingProduct->sales_price + $landing_page->delivery_cost }}
             console.log(landingProductId, delivery_cost, total_amount);
             fbq('track', 'ViewContent', {
@@ -400,6 +441,9 @@
                             $('#discount_landing').html(html)
                             $('#coupon_discount').val(data.discount);
                             $('#coupon_applied').val('yes');
+                            let current_total_value = parseFloat($('#total_amount').html());
+                            let discounted_amount = `${current_total_value - data.discount} ৳`;
+                            $('#total_amount').html(discounted_amount);
                         }
                         messageDiv.show();
                     },

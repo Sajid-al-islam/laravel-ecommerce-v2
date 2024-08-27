@@ -49,7 +49,7 @@ Route::group(['prefix' => '', 'namespace' => "Livewire"], function () {
         Route::get('/reset-password', "ResetPassword")->name('frontend.reset_password');
         Route::get('/invoice/{id}', "Invoice")->name('frontend.invoice');
     });
-    Route::get('/order-complete/{id}', "OrderComplete")->name('order_complete');
+
     // Route::get('/product/{id}/{product_name}', ProductDetails::class)->name('product_details');
     // Route::get('/category/{id}/{category_name}', CategoryProduct::class)->name('category_product');
     // Route::get('/product/search/{search}', SearchProduct::class)->name('search_product');
@@ -68,7 +68,9 @@ Route::group(['prefix' => '', 'namespace' => "Livewire"], function () {
 Route::group(['prefix' => '', 'namespace' => "Controllers"], function () {
     Route::get('/', 'WebsiteController@website');
     Route::get('/invoice/{invoice}', 'WebsiteController@invoice_download')->name('invoice');
-    Route::get('/tt', function () {
+    Route::get('/order-complete/{id}', "WebsiteController@order_complete")->name('order_complete');
+    Route::get('/oc', function () {
+        Artisan::call('optimize:clear');
         // $p = \App\Models\Product::class;
         // $cats = DB::table('category_product')->get();
         // foreach ($cats as $cat) {
