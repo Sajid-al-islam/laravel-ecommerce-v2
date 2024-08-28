@@ -287,35 +287,32 @@
                                                     </div>
                                                 </div>
 
-                                                <div class="">
-                                                    <p>ডেলিভারি অপশন সিলেক্ট করুন</p>
-                                                    <label class="radio-inline">
-                                                        <input class="delivery_cost" id="home_delivery" type="radio" checked
-                                                            onchange="shipping_cost.innerHTML=`{{ $setting->home_delivery_cost }} ৳`;"
-                                                            name="shipping_method" value="{{ $setting->home_delivery_cost }}" />
-                                                        Inside Dhaka - {{ $setting->home_delivery_cost }} ৳
-                                                    </label>
-                                                    <br />
-                                                    {{-- <br />
-                                                <label class="radio-inline">
-                                                    <input type="radio" onchange="shipping_cost.innerHTML=0; total_cost.innerHTML=`{{$cart_total}}`;" checked name="shipping_method" value="pickup" />
-                                                    Store Pickup - 0 ৳
-                                                </label> --}}
-                                                    <label class="radio-inline">
-                                                        <input class="delivery_cost" id="outside_dhaka" type="radio"
-                                                            onchange="shipping_cost.innerHTML=`{{ $setting->sub_area_delivery_cost }} ৳`;"
-                                                            name="shipping_method" value="{{ $setting->sub_area_delivery_cost }}" />
-                                                        Dhaka Sub area (Gazipur, Naraynganj) - {{ $setting->sub_area_delivery_cost }} ৳
-                                                    </label>
-                                                    <br />
-                                                    <label class="radio-inline">
-                                                        <input class="delivery_cost" id="outside_dhaka" type="radio"
-                                                            onchange="shipping_cost.innerHTML=`{{ $setting->outside_dhaka_cost }} ৳`;"
-                                                            name="shipping_method" value="{{ $setting->outside_dhaka_cost }}" />
-                                                        Outside Dhaka - {{ $setting->outside_dhaka_cost }} ৳
-                                                    </label>
-                                                    <br />
-                                                </div>
+                                                @if ($landing_page->delivery_cost > 0)
+                                                    <div class="delivery_cost_section">
+                                                        <p>ডেলিভারি অপশন সিলেক্ট করুন</p>
+                                                        <label class="radio-inline">
+                                                            <input class="delivery_cost" id="home_delivery" type="radio" checked
+                                                                onchange="shipping_cost.innerHTML=`{{ $setting->home_delivery_cost }} ৳`;"
+                                                                name="shipping_method" value="{{ $setting->home_delivery_cost }}" />
+                                                            Inside Dhaka - {{ $setting->home_delivery_cost }} ৳
+                                                        </label>
+                                                        <br />
+                                                        <label class="radio-inline">
+                                                            <input class="delivery_cost" id="outside_dhaka" type="radio"
+                                                                onchange="shipping_cost.innerHTML=`{{ $setting->sub_area_delivery_cost }} ৳`;"
+                                                                name="shipping_method" value="{{ $setting->sub_area_delivery_cost }}" />
+                                                            Dhaka Sub area (Gazipur, Naraynganj) - {{ $setting->sub_area_delivery_cost }} ৳
+                                                        </label>
+                                                        <br />
+                                                        <label class="radio-inline">
+                                                            <input class="delivery_cost" id="outside_dhaka" type="radio"
+                                                                onchange="shipping_cost.innerHTML=`{{ $setting->outside_dhaka_cost }} ৳`;"
+                                                                name="shipping_method" value="{{ $setting->outside_dhaka_cost }}" />
+                                                            Outside Dhaka - {{ $setting->outside_dhaka_cost }} ৳
+                                                        </label>
+                                                        <br />
+                                                    </div>
+                                                @endif
 
                                                 <hr class="my-4" />
 
@@ -376,6 +373,7 @@
     </main>
     <script>
         $(document).ready(function() {
+            updateCart(landingProductId, delivery_cost);
             var delivery_cost = parseFloat($('input[name="shipping_method"]:checked').val());
             $('input[name="shipping_method"]').change(function () {
                 // Get the selected shipping method value (assume it's the delivery cost)
